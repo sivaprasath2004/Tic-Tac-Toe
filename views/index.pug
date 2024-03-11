@@ -1,0 +1,15 @@
+extends layouts/main.pug
+block stylesheets
+  link(rel="stylesheet", href="index.css")
+block contentes
+  div(class='play_option')
+    div(class='play_with_computer')
+      h2 Play with a Computer
+      button(id="play_with_computer_button") start
+    div(class='play_with_computer')
+      img(src="/asset/tictactoe.gif",alt='gif')
+block scripts
+  script(src="/js/script.js")
+
+
+  

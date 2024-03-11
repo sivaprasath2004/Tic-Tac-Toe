@@ -1,0 +1,20 @@
+html
+  head
+    title #{title}
+    link(rel="stylesheet", href="main.css")
+    block stylesheets
+  body
+    header
+        div(class='heading')
+          a(href='/') Home 
+          a(href='/about') About
+          a(href='/contact') Contact
+          a(href='/support') Support
+        div(class='nav')
+          a(href='/about') Friend
+    block contentes
+    block scripts
+    footer 
+      p @copyright  
+        a(href="https://github.com/sivaprasath2004") sivaprasath2004
+
