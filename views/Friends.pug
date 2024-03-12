@@ -1,0 +1,8 @@
+extends layouts/main.pug
+block contentes
+  input(type='text',id='create_room_input_name',placeholder='name')  
+  input(type='text',id='create_room_input_password',placeholder='password') 
+  button(id='create_room_input_button') create
+block scripts
+  script(src='/socket.io/socket.io.js')
+  script(src="js/socket.js") 

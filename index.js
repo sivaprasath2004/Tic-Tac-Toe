@@ -1,6 +1,10 @@
 const express=require('express')
 const app=express()
 const path=require('path')
+const http=require('http')
+const server=http.createServer(app)
+const socketio=require('socket.io')
+const io=socketio(server,{cors:{origin:'*'}})
 const router=express.Router()
 app.use(express.static(path.join(__dirname,'public')))
 app.set('view engine','pug')
@@ -14,5 +18,19 @@ router.get('/about',(req,res)=>{
         title:'About'
     })
 })
+router.get('/friends',(req,res)=>{
+    res.status(200).render('Friends',{
+        title:'friends'
+    })
+})
+io.on('connect',(socket)=>{
+socket.on('join',({name,password},callBack)=>{
+console.log('joined',name,password)
+if(!name || !password){
+callBack("name and password is require")
+}
+})
+}
+)
 app.use(router);
-app.listen(5000,()=>console.log('this is running in 5000'))
+server.listen(5000,()=>console.log('this is running in 5000'))
