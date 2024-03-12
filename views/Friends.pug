@@ -1,8 +1,33 @@
 extends layouts/main.pug
+block stylesheets
+  link(rel="stylesheet", href="room.css")
 block contentes
-  input(type='text',id='create_room_input_name',placeholder='name')  
-  input(type='text',id='create_room_input_password',placeholder='password') 
-  button(id='create_room_input_button') create
+  div(id="container")
+    div(class='boxheading')
+      div(id='createroom')
+        img(src="/asset/register.svg")
+        button(id="create_room_butt") Create Room
+      div(id='joinroom')
+         img(src="/asset/register.svg")
+         p If you want to join with friends, click to join the room.
+         button(id='join_room_butt') Join Room 
+    div(id='box')
+      div(class="content")
+        div(id='create_room')
+          h1 create a room
+          div(id='name')
+            input(type='text',class="input",id='time',readonly)
+          div(id='name')
+            span(class='span') name
+            input(type='text',class="input",id='create_room_input_name')
+          button(id='create_room_input_button') create
+        div(id="join_room")
+          span Room Id
+            input(type='text',id='join_room_input_name')  
+          div(id='name')
+            span name   
+              input(type='text',id='join_room_input_name')  
+          button(id='join_room_input_button') join
 block scripts
   script(src='/socket.io/socket.io.js')
   script(src="js/socket.js") 

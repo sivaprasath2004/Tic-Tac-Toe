@@ -24,8 +24,8 @@ router.get('/friends',(req,res)=>{
     })
 })
 io.on('connect',(socket)=>{
-socket.on('join',({name,password},callBack)=>{
-console.log('joined',name,password)
+socket.on('join',({name},callBack)=>{
+console.log('joined',name)
 if(!name || !password){
 callBack("name and password is require")
 }
