@@ -3,7 +3,7 @@ block stylesheets
   link(rel="stylesheet", href="room.css")
 block contentes
   div(id="container")
-    div(class='boxheading')
+    div(id='boxheading')
       div(id='createroom')
         img(src="/asset/register.svg")
         button(id="create_room_butt") Create Room
@@ -22,11 +22,13 @@ block contentes
             input(type='text',class="input",id='create_room_input_name')
           button(id='create_room_input_button') create
         div(id="join_room")
-          span Room Id
+          h1 join room
+          div(id='name')
+            span Room Id
             input(type='text',id='join_room_input_name')  
           div(id='name')
             span name   
-              input(type='text',id='join_room_input_name')  
+            input(type='text',id='join_room_input_name')  
           button(id='join_room_input_button') join
 block scripts
   script(src='/socket.io/socket.io.js')
