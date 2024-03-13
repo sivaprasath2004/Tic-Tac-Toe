@@ -23,15 +23,27 @@ socket.emit('join',{name:name},(err)=>{
 })
 let join=document.getElementById('join_room')
 let create=document.getElementById('create_room')
+let createroom=document.getElementById('createroom')
+let joinroom=document.getElementById('joinroom')
 let container=document.getElementById('container')
-let new=document.getElementById('new_heading')
+let new_box=document.getElementById('new_box')
+let new_container=document.getElementById('new_heading')
+let boxheading=document.getElementById('boxheading')
+let create_room_butt=document.getElementById('create_room_butt')
 let join_room=document.getElementById('join_room_butt')
 join_room.addEventListener('click',()=>{
     create.style.display='none';
-    join.style.display='block';
     join.style.display='flex';
-    join.style.justifyContent="center";
-    join.style.alignItems="center";
-    join.style.gap='2rem';
     container.setAttribute('id','new_box')
+    boxheading.setAttribute('id',"new_heading")
+    joinroom.style.display="none"
+    createroom.style.display="flex"
+})
+create_room_butt.addEventListener('click',()=>{
+    create.style.display='flex';
+    join.style.display='none';
+    new_box.setAttribute('id','container')
+    new_container.setAttribute('id',"boxheading")
+    joinroom.style.display="flex"
+    createroom.style.display="none"
 })
