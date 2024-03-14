@@ -19,7 +19,7 @@ let name=document.getElementById('create_room_input_name').value
 if(name){
 socket.emit('join',{name:name},({id,error})=>{
     if(error==="ok"){
-        window.location.href = '/board?id='+id;
+        window.location.href = `/board?id=${id}&name=${name}`;
     }
 })
 }

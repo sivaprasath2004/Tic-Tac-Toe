@@ -26,7 +26,9 @@ router.get('/friends',(req,res)=>{
 })
 router.get('/board',(req,res)=>{
     res.status(200).render('Board',{
-        title:'board'
+        title:'board',
+        id:req.query.id,
+        name:req.query.name
     })
 })
 io.on('connect',(socket)=>{

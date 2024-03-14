@@ -2,6 +2,32 @@ html(lang="en")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title Document
+        title #{title}
+        link(rel="stylesheet", href="Board.css")
     body 
-      h1 hello welcome
+      header
+        div(id="name") 
+         h1 Tic Tac Toe
+        div(id="logout")
+         img(src="https://cdn-icons-png.flaticon.com/128/2311/2311524.png",alt="menu",id="menu")
+         img(src="https://cdn-icons-png.flaticon.com/128/4400/4400629.png",alt="logout",id="exit")
+      div(id="more")
+        p(id="p") Id:#{id}
+        button(id='copy')
+          img(src="https://cdn-icons-png.flaticon.com/128/1620/1620767.png",alt="share",id="copy_icon")
+          p(id="copy_text") copy
+        button(id='share')
+          img(src="https://cdn-icons-png.flaticon.com/128/929/929539.png",alt="share",id="share_icon")   
+      button(id='exit_game') Exit
+      div(id="board")
+         div(class="cell",id=0)
+         div(class="cell",id=1)
+         div(class="cell",id=2)
+         div(class="cell",id=3)
+         div(class="cell",id=4)
+         div(class="cell",id=5)
+         div(class="cell",id=6)
+         div(class="cell",id=7)
+         div(class="cell",id=8)
+      p(id="winners")
+    script(src="js/board.js")   
