@@ -6,6 +6,7 @@ const server=http.createServer(app)
 const socketio=require('socket.io')
 const io=socketio(server,{cors:{origin:'*'}})
 const router=express.Router()
+const {userAdded}=require('./controller/user')
 app.use(express.static(path.join(__dirname,'public')))
 app.set('view engine','pug')
 router.get('/',(req,res)=>{
@@ -23,11 +24,21 @@ router.get('/friends',(req,res)=>{
         title:'friends'
     })
 })
+router.get('/board',(req,res)=>{
+    res.status(200).render('Board',{
+        title:'board'
+    })
+})
 io.on('connect',(socket)=>{
 socket.on('join',({name},callBack)=>{
-console.log('joined',name)
-if(!name || !password){
-callBack("name and password is require")
+const {user,error}=userAdded({id:socket.id,name:name})
+if(!user){
+callBack({error:error})
+console.log(error)
+return;
+}
+else{
+    callBack({id:user.id,error:"ok"})
 }
 })
 }

@@ -5,7 +5,8 @@ block contentes
   div(id="container")
     div(id='boxheading')
       div(id='createroom')
-        img(src="/asset/register.svg")
+        img(src="/asset/log.svg")
+        p If you want to play with new friends room, click to create the room.
         button(id="create_room_butt") Create Room
       div(id='joinroom')
          img(src="/asset/register.svg")
@@ -23,6 +24,8 @@ block contentes
           button(id='create_room_input_button') create
         div(id="join_room")
           h1 join room
+          div(id='name')
+            input(type='text',class="input",id='jointime',readonly)
           div(id='name')
             span Room Id
             input(type='text',id='join_room_input_name')  

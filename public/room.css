@@ -15,18 +15,22 @@
     height: 300px;
     width: 50%;
 }
-#boxheading{
-    height:100%;
+#boxheading,#new_heading
+{ height: 100%;
     position: absolute;
     bottom: 0%;
-    left: 0%;
-    width: 60%;
+    right: 0%;
+    width: 750;
     display: flex;
+    justify-content: flex-end;
     flex-wrap: wrap;
-    justify-content: flex-start;
     align-items: center;
-    background-color: white;
-    clip-path: circle(88% at left 103%);
+    background-color: white;}
+#boxheading{
+    justify-content: flex-start;
+    top: 0%;
+    left: 0%;
+    clip-path: circle(81% at left 103%);
 }
 #box{
     width: 40%;
@@ -42,7 +46,7 @@
     font-family: "Rowdies", sans-serif;
   font-weight: 400;
   font-style: normal;
-}
+}   
 #joinroom,#createroom{
     display: flex;
     justify-content:flex-end;
@@ -132,15 +136,5 @@ input:focus{
     align-items: center;
 }
 #new_heading{
-    height: 100%;
-    position: absolute;
-    bottom: 0%;
-    right: 0%;
-    width: 60%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    align-items: center;
-    background-color: white;
-    clip-path: circle(88% at right 102%);
+    clip-path: circle(81% at right 102%);
 }
