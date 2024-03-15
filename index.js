@@ -6,7 +6,7 @@ const server=http.createServer(app)
 const socketio=require('socket.io')
 const io=socketio(server,{cors:{origin:'*'}})
 const router=express.Router()
-const {userAdded}=require('./controller/user')
+const {userAdded,userRoomcheck}=require('./controller/user')
 app.use(express.static(path.join(__dirname,'public')))
 app.set('view engine','pug')
 router.get('/',(req,res)=>{
@@ -41,6 +41,30 @@ return;
 }
 else{
     callBack({id:user.id,error:"ok"})
+}
+console.log(user.id)
+console.log(socket.id)
+})
+socket.on('mainCoonection',(user)=>{
+socket.join(user.id)
+socket.emit('message',{user:'admin',text:`${user.name} joined`})
+socket.broadcast.to(user.id).emit('message',{user:'admin',text:`${user.name} joined`,opp:user.name})
+})
+socket.on('sendMes', (message,callBack) => {
+    console.log(message)
+    io.to(message.id).emit('message',message)
+    console.log("sended")
+  })
+socket.on('joinRoom',({id,name},callBack)=>{
+const {user,error}=userRoomcheck({id,name})
+console.log(user)
+console.log(error)
+if(error){
+    callBack({error:error})
+    return;
+}
+else{
+   callBack({id:user.id,error:error})
 }
 })
 }

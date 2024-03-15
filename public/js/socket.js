@@ -26,7 +26,22 @@ socket.emit('join',{name:name},({id,error})=>{
 })
 let join_button=document.getElementById('join_room_input_button')
 join_button.addEventListener('click',()=>{
-    console.log("hello")
+let join_room_input_name=document.getElementById('join_room_input_name').value 
+let join_room_Room_id=document.getElementById('join_room_Room_id').value 
+let error_display=document.getElementById('errors')
+if(join_room_Room_id && join_room_input_name){
+    socket.emit('joinRoom',{id:join_room_Room_id,name:join_room_input_name},({id,error})=>{
+        if(error){
+           error_display.textContent=error
+           error_display.style.color="rgb(0 241 255)"
+           error_display.style.fontWeight=900
+        }
+        else{
+        window.location.href=`/board?id=${id}&name=${join_room_input_name}`
+        }
+    })
+}
+else{console.log("not work")}
 })
 let join=document.getElementById('join_room')
 let create=document.getElementById('create_room')

@@ -28,10 +28,11 @@ block contentes
             input(type='text',class="input",id='jointime',readonly)
           div(id='name')
             span Room Id
-            input(type='text',id='join_room_input_name')  
+            input(type='text',id='join_room_Room_id')  
           div(id='name')
             span name   
             input(type='text',id='join_room_input_name')  
+          p(id="errors") no error
           button(id='join_room_input_button') join
 block scripts
   script(src='/socket.io/socket.io.js')

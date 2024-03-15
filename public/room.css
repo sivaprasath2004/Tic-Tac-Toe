@@ -120,6 +120,11 @@
     left: 6%;
 
 }
+#errors{
+    margin: -20px;
+    color: transparent;
+    font-size: 1.5rem;
+}
 input:focus{
     outline: none;
 }

@@ -16,4 +16,18 @@ const userAdded=({id,name})=>{
   array.push(user)
   return {user}
 }
-module.exports={userAdded}
+const userRoomcheck=({id,name})=>{
+  console.log('userCheck')
+  let finding=array.filter(item=>item?.id===id)
+  if(finding?.length==1){
+    let update=array.filter(item=>item?.id!==id)
+    array=update
+    console.log(array)
+    const user={id,name:finding[0].name}
+    return {user}
+  }
+  else{
+    return {error:"room is invalid"}
+  }
+}
+module.exports={userAdded,userRoomcheck}
