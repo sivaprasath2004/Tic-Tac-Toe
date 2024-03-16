@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
   let socket = io('http://localhost:5000');
-  let player=[]
   let button=document.getElementById('p').innerText
   let user=document.getElementById('user').innerText
   let message_Point=document.getElementById('message_Point')
@@ -9,9 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("clicked")
   })
 socket.on('message', msg => {
-    msg?.opp?player.push({id:RoomId,name:user,opp:msg.opp}):null
-    console.log(player)
     let chat_container=document.createElement('div')
+    opp=msg.user
     chat_container.setAttribute('id',msg.user==="admin"?"center_container":msg.user===user?"me_container":"you_container")
       let chats=document.createElement('p')
       chats.textContent=msg.text
@@ -63,6 +61,7 @@ exit_game.addEventListener('click',()=>{
 let message_icon=document.getElementById('message_icon')
 let messages=document.getElementById('send_message')
 let message_container=document.getElementById('message')
+const cells = document.querySelectorAll('.cell');
 message_icon.addEventListener('click',()=>{
   if(message_container.style.display==="flex"){
     message_container.style.display="none"
@@ -78,36 +77,115 @@ messages.addEventListener('click',()=>{
   document.getElementById('message_input').value=""
 })
 // game concept
-let findoppnent=player.find(item=>item.id===RoomId)
-const cells = document.querySelectorAll('.cell');
-let currentPlayer = 'X';
 let gameEnd = false;
 let winner=document.createElement('p')
-if(findoppnent?.opp!==undefined){
-  winner.classList.remove('winners')
-cells.forEach(cell => {
-  cell.addEventListener('click', handleClick);
-});
-
-async function handleClick() {
-    this.classList.add("animation")
-    setTimeout(()=>{
-    this.classList.remove("animation")
-  if (gameEnd || this.textContent !== '') return;
-  this.textContent = currentPlayer;
-  const classadd=()=>{
-    this.classList.remove("animation")
-    if(currentPlayer==="X"){
-        console.log("player X")
-      this.classList.add("player-X")
-      }
-      else{
-        console.log("player-0")
-      this.classList.add("player-O")
-      }
+let checker=false
+socket.emit('opponent',{id:RoomId,name:user},msg=>{
+  msg?.res==="ok"?checker=true:null
+  if(checker){
+  null
   }
-  function checkWinner() {
+  else{
+   waitingoppenent() 
+  }
+})
+socket.on('start',start=>{
+  console.log(checker,"checker")
+  start!==undefined?checker=true:null
+let currentPlayer="X"
+console.log(start.player1)
+  gameLogic(start.player1,currentPlayer)
+  if(checker){
+    let opponent=document.querySelector('.oppenent')
+    if(document.querySelector('.oppenent')){
+    document.body.removeChild(opponent)
+    }
+  }
+})
+function waitingoppenent(){
+  winner.classList.add("oppenent")
+  winner.textContent="find your oppnent".toUpperCase()
+  document.body.appendChild(winner)
+}
+
+socket.on('player',moves=>{
+  console.log(moves)
+  const cell=document.getElementById(`${moves.cell}`)
+  cell.textContent=moves.currentsimbol
+  cell.classList.add(moves.currentsimbol==="X"?"player-X":"player-O")
+  let currentPlayer=moves.currentsimbol
+    gameLogic(moves.currentPlayer,currentPlayer)
+})
+let currentPlayers;
+let move_player;
+let clickHandler; // Define the clickHandler function reference
+function gameLogic(player, currentPlayer) {
+  move_player=player
+  console.log(player)
+  let user = document.getElementById('user').innerText;
+  currentPlayers = currentPlayer;
+  let cells = document.querySelectorAll('.cell');
+
+  cells.forEach((cell, index) => {
+    if (player === user) {
+      console.log(true);
+      // Add event listener using clickHandler reference
+      cell.addEventListener('click', clickHandler);
+    } else {
+      console.log(false);
+      // Remove event listener using clickHandler reference
+      cell.removeEventListener('click', clickHandler);
+    }
+  });
+}
+
+clickHandler = function(event) {
+  let index = Array.from(event.target.parentNode.children).indexOf(event.target);
+  console.log("hello", index);
+  let currentPlayer=currentPlayers
+  socket.emit('playerMove',({id:RoomId,player:move_player,cell:index,currentsimbol:currentPlayer}),()=>{})
+      this.classList.add("animation")
+      this.textContent=currentPlayer
+      const win=(win)=>{
+        winner.classList.add("winners")
+        if(win!=="draw"){
+        winner.textContent=`${user} wins!`;
+        }else{
+          winner.textContent="cell match is Draw"
+        }
+        document.body.appendChild(winner)
+      }
+      if (checkWinner()) {
+        console.log("Win")
+        win("user_win")
+        gameEnd = true;
+        return;
+      }
+      if (checkDraw()) {
+        win("draw")
+        gameEnd = true;
+        return;
+      }
+      setTimeout(()=>{
+      this.classList.remove("animation")
+    if (gameEnd || this.textContent !== '') return;
+    this.textContent = currentPlayers;
+    const classadd=()=>{
+      this.classList.remove("animation")
+      if(currentPlayer==="X"){
+          console.log("player X")
+        this.classList.add("player-X")
+        }
+        else{
+          console.log("player-0")
+        this.classList.add("player-O")
+        }
+    }
     classadd()
+   
+  },500)
+  function checkWinner() {
+    console.log("check winner")
     const winningCombos = [
       [0, 1, 2],
       [3, 4, 5],
@@ -118,7 +196,6 @@ async function handleClick() {
       [0, 4, 8],
       [2, 4, 6]
     ];
-    
     return winningCombos.some(combo => {
       const [a, b, c] = combo;
       return cells[a].textContent === currentPlayer &&
@@ -126,41 +203,12 @@ async function handleClick() {
              cells[c].textContent === currentPlayer;
     });
   }
-  const win=(win)=>{
-    winner.classList.add("winners")
-    if(win!=="draw"){
-    winner.textContent=`${user} wins!`;
-    }else{
-      winner.textContent="This match is Draw"
-    }
-  }
-  if (checkWinner()) {
-    win("user_win")
-    gameEnd = true;
-    return;
-  }
-  else{
-    classadd()
-  }
-  if (checkDraw()) {
-    win("draw")
-    gameEnd = true;
-    return;
-  }
+    currentPlayers==="X"?"O":"X"
+    console.log("at last current",currentPlayers)
+    function checkDraw() {
+      return [...cells].every(cell => cell.textContent !== '');  
+  };
   
-  currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-},500)
-}
-
-
-
-function checkDraw() {
-  return [...cells].every(cell => cell.textContent !== '');
-}
-}
-else{
-  winner.classList.add("winners")
-  winner.textContent="find your oppnent"
-  document.body.appendChild(winner)
-}
+  }
 })
+

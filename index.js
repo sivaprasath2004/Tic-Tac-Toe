@@ -6,7 +6,7 @@ const server=http.createServer(app)
 const socketio=require('socket.io')
 const io=socketio(server,{cors:{origin:'*'}})
 const router=express.Router()
-const {userAdded,userRoomcheck}=require('./controller/user')
+const {userAdded,userRoomcheck,matchStart,changeplayer}=require('./controller/user')
 app.use(express.static(path.join(__dirname,'public')))
 app.set('view engine','pug')
 router.get('/',(req,res)=>{
@@ -64,8 +64,24 @@ if(error){
     return;
 }
 else{
+    console.log(user)
    callBack({id:user.id,error:error})
 }
+})
+socket.on('opponent',({id,name},callBack)=>{
+    const {start,player1,palyer2,res,error}=matchStart({id,name})
+    if(error){
+        callBack(error)
+    }
+    else{
+        io.to(id).emit('start',{start,player1,palyer2,res})
+        callBack({start,res,player1,palyer2})
+        console.log(start,player1,palyer2,res)
+    }
+})
+socket.on('playerMove',({id,player,cell,currentsimbol})=>{
+    const {currentPlayer}=changeplayer({id,player})
+    io.to(id).emit('player',{id,currentPlayer,cell,currentsimbol:currentsimbol==="X"?"O":"X"})
 })
 }
 )

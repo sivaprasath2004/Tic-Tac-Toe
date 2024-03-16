@@ -1,4 +1,6 @@
 let array=[]
+let opponents=[]
+let playerchanger=[]
 const userAdded=({id,name})=>{
     console.log('adduser')
   if(!id && !name){
@@ -20,9 +22,7 @@ const userRoomcheck=({id,name})=>{
   console.log('userCheck')
   let finding=array.filter(item=>item?.id===id)
   if(finding?.length==1){
-    let update=array.filter(item=>item?.id!==id)
-    array=update
-    console.log(array)
+    opponents.push(id)
     const user={id,name:finding[0].name}
     return {user}
   }
@@ -30,4 +30,24 @@ const userRoomcheck=({id,name})=>{
     return {error:"room is invalid"}
   }
 }
-module.exports={userAdded,userRoomcheck}
+const matchStart=({id,name})=>{
+  let finding=opponents.filter(item=>item===id)
+  if(finding?.length==1){
+    let val=array.find(item=>item.id===id)
+    let user={id:id,player1:val.name,palyer2:name}
+    playerchanger.push(user)
+    return {start:'Start the Match',player1:val.name,palyer2:name,res:'ok'}
+  }
+  else{
+    return {error:'Finding your opponent'}
+  }
+}
+const changeplayer=({id,player})=>{
+  console.log("playerss",player)
+   let players=playerchanger.find(item=>item.id===id)
+   console.log("players",players)
+   let currentPlayer=player===players.player1?players.palyer2:players.player1
+   console.log(currentPlayer)
+   return {currentPlayer}
+}
+module.exports={userAdded,userRoomcheck,matchStart,changeplayer}
