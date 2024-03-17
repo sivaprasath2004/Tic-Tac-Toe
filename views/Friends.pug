@@ -2,7 +2,8 @@ extends layouts/main.pug
 block stylesheets
   link(rel="stylesheet", href="room.css")
 block contentes
-  div(id="container")
+  
+  div(id="container") 
     div(id='boxheading')
       div(id='createroom')
         img(src="/asset/log.svg")
@@ -11,7 +12,7 @@ block contentes
       div(id='joinroom')
          img(src="/asset/register.svg")
          p If you want to join with friends, click to join the room.
-         button(id='join_room_butt') Join Room 
+         button(id='join_room_butt') Join Room
     div(id='box')
       div(class="content")
         div(id='create_room')

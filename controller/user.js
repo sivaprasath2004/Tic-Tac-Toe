@@ -7,7 +7,6 @@ const userAdded=({id,name})=>{
   if(!id && !name){
     return {error:"name is required"}
   }
-  name=name.trim().toLowerCase()
   if(array.length){
     console.log('second')
     let finding=array.find(item=>item?.id==id)
@@ -55,7 +54,7 @@ const restart_game=({id,Symbol,player,user})=>{
   let detail=reset.find(item=>item.id===id)
   console.log("first_details",detail)
   if(detail){
-    let next_match=reset.filter(item=>item.id===id)
+    let next_match=reset.filter(item=>item.id!==id)
     reset=next_match
     console.log(next_match)
      const {currentPlayer}=changeplayer({id,player})

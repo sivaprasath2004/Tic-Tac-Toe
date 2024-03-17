@@ -5,35 +5,44 @@
     width: 100%;
     align-self: center;
     height: 100vh;
-    justify-content: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
     align-items: center;
+}
+header{
+    background-color: transparent;
+    position: fixed;
+    z-index: 1;
+}
+header .heading a{
+    color: black;
 }
 #box{
     display: flex;
     border-radius: 12px;
     flex-direction: column;
+    background-color: transparent;
+    position: relative;
+    z-index: -1;
     height: 300px;
     width: 50%;
 }
 #boxheading,#new_heading
 { height: 100%;
-    position: absolute;
-    bottom: 0%;
-    right: 0%;
-    width: 750;
+    width: 60%;
+    flex: 1 0 10rem;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     flex-wrap: wrap;
     align-items: center;
     background-color: white;}
 #boxheading{
     justify-content: flex-start;
-    top: 0%;
-    left: 0%;
-    clip-path: circle(81% at left 103%);
+    clip-path: circle(82% at 8% 49%);
 }
 #box{
-    width: 40%;
+    width: 50%;
+    flex: 1 0 10rem;
 }
 #join_room,#create_room{
     display: flex;
@@ -142,4 +151,7 @@ input:focus{
 }
 #new_heading{
     clip-path: circle(81% at right 102%);
+}
+@media (max-width:550px) {
+   
 }

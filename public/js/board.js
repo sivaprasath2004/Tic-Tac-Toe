@@ -112,15 +112,15 @@ socket.on('player',moves=>{
   cell.classList.add(moves.currentsimbol==="X"?"player-X":"player-O")
   currentPlayer=moves.currentsimbol
   let gameEnd=false
-  if (checkWinner()) {
-    winner.classList.add("winners")
-    player_winner(moves.old_player)
-    gameEnd = true;
-    return;
-  }
   if (checkDraw()) {
     winner.classList.add("winners")
     Draw()
+    gameEnd = true;
+    return;
+  }
+  if (checkWinner()) {
+    winner.classList.add("winners")
+    player_winner(moves.old_player)
     gameEnd = true;
     return;
   }
@@ -134,7 +134,7 @@ function player_winner(wining_player){
   winner.textContent=""
   winner.classList.remove("oppenent")
   let p_tag=document.createElement('p')
-  p_tag.textContent=`${wining_player} wins!`
+  p_tag.textContent=`${wining_player===user?"You":"Opponent"} win!`
   p_tag.classList.add('slogan')
   let reset_button=document.createElement('button')
   reset_button.classList.add("reset_game")
@@ -164,8 +164,10 @@ socket.on('reset_game',msg=>{
     resetGame(msg.currentPlayer,msg.symbol)
   }
   else{
-    if(user===msg.currentPlayer){
+    if(user===msg.user){
     let parent_tag=document.querySelector('.winners')
+    let p_tag=document.querySelector('.slogan')
+    p_tag.textContent=msg.start
     let reset_button=document.querySelector('.reset_game')
     parent_tag.removeChild(reset_button)
     }
@@ -190,6 +192,7 @@ function Draw(){
   reset()
 }
 function checkDraw() {
+  console.log("Checking")
   return [...cells].every(cell => cell.textContent !== '');  
 };
 function checkWinner() {
@@ -212,13 +215,14 @@ function checkWinner() {
 }
 let move_player;
 let clickHandler;
-function oppenent_palyer(opponent){
+function oppenent_palyer(){
+  let profiles=document.getElementById('profiles')
   let opponent_player=document.createElement('div')
       opponent_player.classList.add('opponent_profile')
       let name=document.createElement('p')
       name.textContent="O"
       opponent_player.appendChild(name)
-      document.body.appendChild(opponent_player)
+      profiles.appendChild(opponent_player)
 }
 function gameLogic(player, opponent) {
   move_player=player
@@ -231,7 +235,7 @@ function gameLogic(player, opponent) {
         null
       }
       else{
-           oppenent_palyer(opponent)
+           oppenent_palyer()
       }
       let player_turn=document.getElementById('player_turn')
       player_turn.textContent="Your turn"

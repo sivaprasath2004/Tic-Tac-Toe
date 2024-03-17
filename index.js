@@ -76,7 +76,7 @@ socket.on('playerMove',({id,player,cell,currentsimbol})=>{
 })
 socket.on('reset',({id,Symbol,player,user})=>{
    const {start,res,currentPlayer}=restart_game({id,Symbol,player,user})
-   io.to(id).emit("reset_game",{start,res,currentPlayer,symbol:currentPlayer!==player?Symbol==="X"?"O":"X":Symbol})
+   io.to(id).emit("reset_game",{start,res,currentPlayer,symbol:currentPlayer!==player?Symbol==="X"?"O":"X":Symbol,user})
 })
 }
 )

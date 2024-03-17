@@ -21,7 +21,11 @@ html(lang="en")
       button(id='share')
         img(src="https://cdn-icons-png.flaticon.com/128/929/929539.png", alt="share", id="share_icon")
     button(id='exit_game') Exit
-    div(id="player_turn") Your Turn
+    div(id="profiles")
+      div(id="profile")
+        p(id="name") #{name[0]}
+      div(id="player_turn") Your Turn
+      
     div(id="board")
       // Game board cells
       div(class="cell", id=0)
@@ -40,6 +44,4 @@ html(lang="en")
       div(id="input")
         input(id="message_input", type="text", placeholder="message")
         img(src="https://cdn-icons-png.flaticon.com/128/10426/10426419.png", alt="send", id="send_message")
-    div(id="profile")
-      p(id="name") #{name[0]}
     script(src="js/board.js")
