@@ -68,3 +68,15 @@ body footer{
 body footer p a{
     color:#010587;
 }
+@media (max-width:420px) {
+    header{
+        justify-content: space-between;
+    }
+    header .heading{
+        gap: 1rem;
+    }
+    header .nav{
+        width: 25%;
+        padding: 10px;
+    }
+}
