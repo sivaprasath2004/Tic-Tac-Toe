@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let message_Point=document.getElementById('message_Point')
   let RoomId=button.split(":").pop()
   socket.emit('mainCoonection',({id:RoomId,name:user}),()=>{
-    console.log("clicked")
   })
 socket.on('message', msg => {
     let chat_container=document.createElement('div')
@@ -70,7 +69,6 @@ message_icon.addEventListener('click',()=>{
   }
 })
 messages.addEventListener('click',()=>{
-  console.log("clicked")
   let text=document.getElementById('message_input').value
   socket.emit('sendMes',({id:button.split(':').pop(),user:user,text:text}),()=>{
   })
@@ -89,12 +87,12 @@ socket.emit('opponent',{id:RoomId,name:user},msg=>{
    waitingoppenent() 
   }
 })
+let currentPlayer="X";
+let secondPlayer;
 socket.on('start',start=>{
-  console.log(checker,"checker")
   start!==undefined?checker=true:null
-let currentPlayer="X"
-console.log(start.player1)
-  gameLogic(start.player1,currentPlayer)
+  secondPlayer=start.player2
+  gameLogic(start.player1,start.player2)
   if(checker){
     let opponent=document.querySelector('.oppenent')
     if(document.querySelector('.oppenent')){
@@ -109,31 +107,148 @@ function waitingoppenent(){
 }
 
 socket.on('player',moves=>{
-  console.log(moves)
   const cell=document.getElementById(`${moves.cell}`)
   cell.textContent=moves.currentsimbol
   cell.classList.add(moves.currentsimbol==="X"?"player-X":"player-O")
-  let currentPlayer=moves.currentsimbol
-    gameLogic(moves.currentPlayer,currentPlayer)
+  currentPlayer=moves.currentsimbol
+  let gameEnd=false
+  if (checkWinner()) {
+    winner.classList.add("winners")
+    player_winner(moves.old_player)
+    gameEnd = true;
+    return;
+  }
+  if (checkDraw()) {
+    winner.classList.add("winners")
+    Draw()
+    gameEnd = true;
+    return;
+  }
+  if(!gameEnd){
+    gameLogic(moves.currentPlayer,moves.old_player)
+  }
 })
-let currentPlayers;
+let winner_player;
+function player_winner(wining_player){
+  winner_player=winner_player
+  winner.textContent=""
+  winner.classList.remove("oppenent")
+  let p_tag=document.createElement('p')
+  p_tag.textContent=`${wining_player} wins!`
+  p_tag.classList.add('slogan')
+  let reset_button=document.createElement('button')
+  reset_button.classList.add("reset_game")
+  reset_button.textContent="Rematch"
+  winner.appendChild(reset_button)
+  winner.appendChild(p_tag)
+  document.body.appendChild(winner)
+  reset()
+}
+function resetGame() {
+  document.querySelectorAll('.cell').forEach(cell => {
+    cell.classList.remove('animation', 'player-X', 'player-O');
+    cell.textContent = '';
+  });
+  if (winner.parentNode) {
+    winner.parentNode.removeChild(winner);
+  }
+}
+const reset=()=>{
+let reset_game=document.querySelector('.reset_game')
+reset_game.addEventListener('click',()=>{
+  socket.emit("reset",({id:RoomId,Symbol:currentPlayer,player:move_player,user}))
+})
+}
+socket.on('reset_game',msg=>{
+  if(msg.res==="ok"){
+    resetGame(msg.currentPlayer,msg.symbol)
+  }
+  else{
+    if(user===msg.currentPlayer){
+    let parent_tag=document.querySelector('.winners')
+    let reset_button=document.querySelector('.reset_game')
+    parent_tag.removeChild(reset_button)
+    }
+    else{
+      null
+    }
+  }
+})
+function Draw(){
+  winner_player="Draw"
+  winner.textContent=""
+  winner.classList.remove("oppenent")
+  let p_tag=document.createElement('p')
+  p_tag.textContent="match is Draw"
+  p_tag.classList.add('slogan')
+  let reset_button=document.createElement('button')
+  reset_button.classList.add("reset_game")
+  reset_button.textContent="Rematch"
+  winner.appendChild(reset_button)
+  winner.appendChild(p_tag)
+  document.body.appendChild(winner)
+  reset()
+}
+function checkDraw() {
+  return [...cells].every(cell => cell.textContent !== '');  
+};
+function checkWinner() {
+  const winningCombos = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ];
+  return winningCombos.some(combo => {
+    const [a, b, c] = combo;
+    return cells[a].textContent === currentPlayer &&
+           cells[b].textContent === currentPlayer &&
+           cells[c].textContent === currentPlayer;
+  });
+}
 let move_player;
-let clickHandler; // Define the clickHandler function reference
-function gameLogic(player, currentPlayer) {
+let clickHandler;
+function oppenent_palyer(opponent){
+  let opponent_player=document.createElement('div')
+      opponent_player.classList.add('opponent_profile')
+      let name=document.createElement('p')
+      name.textContent="O"
+      opponent_player.appendChild(name)
+      document.body.appendChild(opponent_player)
+}
+function gameLogic(player, opponent) {
   move_player=player
-  console.log(player)
   let user = document.getElementById('user').innerText;
-  currentPlayers = currentPlayer;
   let cells = document.querySelectorAll('.cell');
 
   cells.forEach((cell, index) => {
     if (player === user) {
-      console.log(true);
-      // Add event listener using clickHandler reference
+      if(document.querySelector('.opponent_profile')){
+        null
+      }
+      else{
+           oppenent_palyer(opponent)
+      }
+      let player_turn=document.getElementById('player_turn')
+      player_turn.textContent="Your turn"
+      player_turn.style.display="flex"
+      player_turn.style.color="#01FF70"
       cell.addEventListener('click', clickHandler);
     } else {
-      console.log(false);
-      // Remove event listener using clickHandler reference
+      if(document.querySelector('.opponent_profile')){
+        null
+      }
+      else{
+           oppenent_palyer(opponent)
+      }
+      let player_turn=document.getElementById('player_turn')
+      player_turn.textContent="Opponent turn"
+      player_turn.style.display="flex"  
+      player_turn.style.color="#FF4136"
       cell.removeEventListener('click', clickHandler);
     }
   });
@@ -141,74 +256,25 @@ function gameLogic(player, currentPlayer) {
 
 clickHandler = function(event) {
   let index = Array.from(event.target.parentNode.children).indexOf(event.target);
-  console.log("hello", index);
-  let currentPlayer=currentPlayers
   socket.emit('playerMove',({id:RoomId,player:move_player,cell:index,currentsimbol:currentPlayer}),()=>{})
       this.classList.add("animation")
       this.textContent=currentPlayer
-      const win=(win)=>{
-        winner.classList.add("winners")
-        if(win!=="draw"){
-        winner.textContent=`${user} wins!`;
-        }else{
-          winner.textContent="cell match is Draw"
-        }
-        document.body.appendChild(winner)
-      }
-      if (checkWinner()) {
-        console.log("Win")
-        win("user_win")
-        gameEnd = true;
-        return;
-      }
-      if (checkDraw()) {
-        win("draw")
-        gameEnd = true;
-        return;
-      }
       setTimeout(()=>{
       this.classList.remove("animation")
     if (gameEnd || this.textContent !== '') return;
-    this.textContent = currentPlayers;
+    this.textContent = currentPlayer;
     const classadd=()=>{
       this.classList.remove("animation")
       if(currentPlayer==="X"){
-          console.log("player X")
         this.classList.add("player-X")
         }
         else{
-          console.log("player-0")
         this.classList.add("player-O")
         }
     }
     classadd()
    
   },500)
-  function checkWinner() {
-    console.log("check winner")
-    const winningCombos = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6]
-    ];
-    return winningCombos.some(combo => {
-      const [a, b, c] = combo;
-      return cells[a].textContent === currentPlayer &&
-             cells[b].textContent === currentPlayer &&
-             cells[c].textContent === currentPlayer;
-    });
-  }
-    currentPlayers==="X"?"O":"X"
-    console.log("at last current",currentPlayers)
-    function checkDraw() {
-      return [...cells].every(cell => cell.textContent !== '');  
-  };
-  
   }
 })
 

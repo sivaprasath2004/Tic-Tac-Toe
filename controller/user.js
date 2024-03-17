@@ -1,4 +1,5 @@
 let array=[]
+let reset=[]
 let opponents=[]
 let playerchanger=[]
 const userAdded=({id,name})=>{
@@ -48,6 +49,22 @@ const changeplayer=({id,player})=>{
    console.log("players",players)
    let currentPlayer=player===players.player1?players.palyer2:players.player1
    console.log(currentPlayer)
-   return {currentPlayer}
+   return {currentPlayer,old_player:player!==players.player1?players.palyer2:players.player1}
 }
-module.exports={userAdded,userRoomcheck,matchStart,changeplayer}
+const restart_game=({id,Symbol,player,user})=>{
+  let detail=reset.find(item=>item.id===id)
+  console.log("first_details",detail)
+  if(detail){
+    let next_match=reset.filter(item=>item.id===id)
+    reset=next_match
+    console.log(next_match)
+     const {currentPlayer}=changeplayer({id,player})
+      return {start:"lets start the match",res:"ok",currentPlayer}
+  }
+  else{
+      let details={id:id,Symbol:Symbol,player:player,user:user}
+      reset.push(details)
+      return {start:"waiting for your opponent",res:"no",currentPlayer:player}
+  }
+}
+module.exports={userAdded,userRoomcheck,matchStart,changeplayer,restart_game}

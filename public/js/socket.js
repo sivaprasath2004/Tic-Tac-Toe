@@ -15,7 +15,7 @@ join_time.value=`${hour}:${min}:${sec} ${AMPM}`
 let socket=io('http://localhost:5000')
 let button=document.getElementById('create_room_input_button')
 button.addEventListener('click',()=>{
-let name=document.getElementById('create_room_input_name').value
+let name=document.getElementById('create_room_input_name').value+"1";
 if(name){
 socket.emit('join',{name:name},({id,error})=>{
     if(error==="ok"){
@@ -26,7 +26,7 @@ socket.emit('join',{name:name},({id,error})=>{
 })
 let join_button=document.getElementById('join_room_input_button')
 join_button.addEventListener('click',()=>{
-let join_room_input_name=document.getElementById('join_room_input_name').value 
+let join_room_input_name=document.getElementById('join_room_input_name').value+"2";
 let join_room_Room_id=document.getElementById('join_room_Room_id').value 
 let error_display=document.getElementById('errors')
 if(join_room_Room_id && join_room_input_name){
@@ -41,7 +41,7 @@ if(join_room_Room_id && join_room_input_name){
         }
     })
 }
-else{console.log("not work")}
+else{null}
 })
 let join=document.getElementById('join_room')
 let create=document.getElementById('create_room')
