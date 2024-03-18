@@ -152,7 +152,7 @@ input:focus{
     justify-content: flex-end;
     align-items: center;
     right: 0%;
-    clip-path: circle(84% at 94% 49%);
+    clip-path: circle(84% at 94% 49%);  
     padding-left: 20px;
 }
 @media (max-width:700px) {
@@ -199,7 +199,7 @@ input:focus{
   }
    #container{
     justify-content: center;
-    align-items:flex-end;
+    align-items:center;
 }
 #new_box{
     margin-top: -20px;
@@ -208,12 +208,14 @@ input:focus{
 }
 #createroom{
     align-items: center;
+    gap:20px;
+    padding-left: 30px;
 }
 #box{
     width: 100%;
     justify-content: center;
 }
-#create_room,#join_room{
-    gap: 1rem;
+body{
+    overflow: hidden;
 }
 }

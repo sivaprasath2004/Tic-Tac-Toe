@@ -31,6 +31,11 @@ router.get('/board',(req,res)=>{
         name:req.query.name
     })
 })
+router.get("/computer",(req,res)=>{
+    res.status(200).render('Board',{
+        title:"Computer"
+    })
+})
 io.on('connect',(socket)=>{
 socket.on('join',({name},callBack)=>{
 const {user,error}=userAdded({id:socket.id,name:name})
