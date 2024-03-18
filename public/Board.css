@@ -196,9 +196,7 @@ header{
     font-weight: 900;
     background-image: linear-gradient(135deg, rgb(68, 202, 201) 0%,rgb(252, 255, 114) 100%);
 }
-.slogan{
-    width: 70%;
-}
+
 .reset_game {
   align-items: center;
   appearance: none;
@@ -394,7 +392,11 @@ input:focus{
     cursor: pointer;
     margin-right: 30px;
 }
-
+@media (max-width:490px) {
+    .slogan{
+       font-size: 1.8rem;
+    }
+}
 @media (max-width:360px) {
     #board{
         display: grid;

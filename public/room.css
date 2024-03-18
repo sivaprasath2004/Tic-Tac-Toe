@@ -202,7 +202,8 @@ input:focus{
     align-items:center;
 }
 #new_box{
-    margin-top: -20px;
+    margin-top: 20px;
+    gap: 1.8rem;
     justify-content: center;
     align-items: flex-start;
 }

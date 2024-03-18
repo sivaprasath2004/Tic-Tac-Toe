@@ -14,9 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
       for (const combo of winningCombos) {
         const [a, b, c] = combo;
         if (cells[a].textContent && cells[a].textContent === cells[b].textContent && cells[a].textContent === cells[c].textContent) {
-          cells[a].classList.add('winner');
-          cells[b].classList.add('winner');
-          cells[c].classList.add('winner');
           gameActive = false;
           return cells[a].textContent;
         }
@@ -27,15 +24,61 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkTie = () => {
       return Array.from(cells).every(cell => cell.textContent !== '');
     };
-  
+    const winner_checking=(item)=>{
+      const winner = checkWinner();
+      if (winner) {
+        let wining_slogan
+        if(item==="user"){
+          wining_slogan="You won  ..!"
+        }
+        else{
+          wining_slogan="You Lost ..!"
+        }
+        player_winner(wining_slogan)
+        console.log("winner")
+        gameActive = false;
+      } else {
+        if (checkTie()) {
+          player_winner("Drae the Match")
+          gameActive = false;
+        } else {
+          if(item==="user"){
+          setTimeout(computerMove, 500); 
+          }
+        }
+      }
+    }
+    function player_winner(wining_player){
+     let winner=document.createElement('p')
+      winner.classList.add("winners")      
+      let p_tag=document.createElement('p')
+      p_tag.textContent=wining_player
+      p_tag.classList.add('slogan')
+      let reset_button=document.createElement('button')
+      reset_button.classList.add("reset_game")
+      reset_button.textContent="Rematch"
+      winner.appendChild(reset_button)
+      winner.appendChild(p_tag)
+      document.body.appendChild(winner)
+      reset_button.addEventListener('click',()=>resetGame())
+    }
+    function resetGame() {
+      document.querySelectorAll('.cell').forEach(cell => {
+        cell.classList.remove('animation', 'player-X', 'player-O');
+        cell.textContent = '';
+      });
+      let winner=document.querySelector('.winners')
+        winner.parentNode.removeChild(winner);
+        gameActive = true;
+    }
     const computerMove = () => {
+      currentPlayer=currentPlayer==="X"?"O":"X"
       const emptyCells = Array.from(cells).filter(cell => cell.textContent === '');
       const randomIndex = Math.floor(Math.random() * emptyCells.length);
       const cell = emptyCells[randomIndex];
       cell.classList.add("animation")
       cell.textContent=currentPlayer
       setTimeout(()=>{
-      currentPlayer = 'O';
       cell.classList.remove("animation")
       cell.textContent = currentPlayer;
     const classadd=()=>{
@@ -48,24 +91,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     classadd()
-   
+   winner_checking("computer")
   },500)
-      const winner = checkWinner();
-      if (!winner) {
-        if (checkTie()) {
-          alert("It's a tie!");
-          gameActive = false;
-        }
-      }
     };
   
     cells.forEach(cell => {
       cell.addEventListener('click', () => {
+      currentPlayer=currentPlayer==="X"?"O":"X"
         if (gameActive && !cell.textContent) {
-            cell.classList.add("animation")
+      cell.classList.add("animation")
       cell.textContent=currentPlayer
       setTimeout(()=>{
-      currentPlayer = 'X';
       cell.classList.remove("animation")
       cell.textContent = currentPlayer;
     const classadd=()=>{
@@ -76,23 +112,10 @@ document.addEventListener('DOMContentLoaded', () => {
         else{
         cell.classList.add("player-O")
         }
-    }
+    setTimeout(winner_checking("user"),500)
+      }   
     classadd()
-   
   },500)
-          const winner = checkWinner();
-          if (winner) {
-            console.log("winner")
-            alert(`${winner} wins!`);
-            gameActive = false;
-          } else {
-            if (checkTie()) {
-              alert("It's a tie!");
-              gameActive = false;
-            } else {
-              setTimeout(computerMove, 500); 
-            }
-          }
         }
       });
     });
