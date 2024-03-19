@@ -6,6 +6,7 @@ const server=http.createServer(app)
 const socketio=require('socket.io')
 const io=socketio(server,{cors:{origin:'*'}})
 const router=express.Router()
+const PORT = process.env.PORT || 5000;
 const {userAdded,userRoomcheck,matchStart,changeplayer,restart_game}=require('./controller/user')
 app.use(express.static(path.join(__dirname,'public')))
 app.set('view engine','pug')
@@ -86,4 +87,4 @@ socket.on('reset',({id,Symbol,player,user})=>{
 }
 )
 app.use(router);
-server.listen(5000,()=>console.log('this is running in 5000'))
+server.listen(PORT,()=>console.log(`this is running in ${PORT}`))
