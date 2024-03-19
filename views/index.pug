@@ -5,8 +5,11 @@ block contentes
   div(id="backgroud_color")
   div(class='play_option')
     h1(id="heading_tag") Let's Start
-    p(id="heading_changer")
-    button(id="play_with_computer_button") start
+    div(id="dynamic_heading")
+      p(id="heading_changer")
+      span(id="cursor")
+    div(id="start_button")
+      button(id="play_with_computer_button") start
 block scripts
   script(src="/js/script.js")
 
