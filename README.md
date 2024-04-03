@@ -8,6 +8,12 @@ This project is a multiplayer Tic Tac Toe game with live play functionality. It 
 - Pug (formerly known as Jade)
 - Socket.io
 
+## Preview
+
+https://github.com/sivaprasath2004/Tic-Tac-Toe/assets/121082414/47ede35e-c07a-4539-a177-8a80d2744e59
+
+
+
 ## Installation
 
 1. Clone this repository: `git clone https://github.com/sivaprasath2004/Tic-Tac-Toe.git`
