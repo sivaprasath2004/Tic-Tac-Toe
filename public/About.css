@@ -41,6 +41,7 @@ nav h1,#about h1,#Join_Room h1,#Create_Room h1{
     gap: 2rem;
 }
 .friends{
+    cursor: pointer;
     margin-right:0.5rem ;
     padding: 0.5rem 1.5rem 0.5rem 1.5rem;
     border: 0.1rem solid gray;
