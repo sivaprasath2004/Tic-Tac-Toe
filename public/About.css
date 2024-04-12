@@ -1,0 +1,497 @@
+@import url('https://fonts.googleapis.com/css2?family=Reddit+Mono:wght@200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Abel&family=Epilogue:ital,wght@0,100..900;1,100..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Oswald:wght@200..700&family=Signika+Negative:wght@300..700&display=swap');
+.home_Page{
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    overflow: hidden;
+}
+nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0%;
+    width: 100%;
+    height: 60px;
+    background: white;
+    z-index: 5;
+}
+#navigation_button,#navigation_container{
+    display: none;
+}
+html {
+    scroll-behavior: smooth;
+  }  
+nav h1,#about h1,#Join_Room h1,#Create_Room h1{
+  font-size:2rem;
+  font-family: "Reddit Mono", monospace;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+#nav,.nav{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 2rem;
+    gap: 2rem;
+}
+.friends{
+    margin-right:0.5rem ;
+    padding: 0.5rem 1.5rem 0.5rem 1.5rem;
+    border: 0.1rem solid gray;
+    border-radius: 20px;
+}
+#nav a,.nav a,.friends a,#friends{
+    text-decoration: none;
+    color: rgb(56, 53, 53);
+    font-size: 1.5rem;
+    font-family: "Reddit Mono", monospace;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  margin: 0;
+  padding: 0;
+}
+#nav a:hover{
+    color: black;
+}
+#home,#about,#support,#contact{
+    padding-top: 55px;
+    min-height: 100vh; 
+}
+#about,#support,#contact{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+#home,.about{
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+#about #text h1{
+    text-align: center;
+}
+.logo{
+    display: flex;
+    flex: 1 0 21rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 4rem;
+    position: relative;
+    }
+    .logo div{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 6rem;
+    }
+    #home .logo::after{
+        content: "";
+        position: absolute;
+    width: 100%;
+    height: 237px;
+    background-color: #7536d3;
+    z-index: -1;
+    right: -1rem;
+    bottom: -3rem;
+    border-radius: 12px;
+    border-top-left-radius: 120px;
+    }
+.X{
+    position: relative;
+    height: 18px;
+   width: 100px;
+   animation: animate 1.2s linear infinite;
+}
+@keyframes animate {
+    0%{
+        scale: 1;
+    }
+    50%{
+        scale: 1.1;
+    }
+    100%{
+        scale: 1;
+    }
+}
+.X::before{
+    content: "";
+    position: absolute;
+   height: 100%;
+   width: 100%;
+   box-shadow: 0 0px 7px rgba(0,0,0,0.5);
+   rotate: 45deg;
+   background-color: white;
+}
+.X::after{
+    content: "";
+    position: absolute;
+   height: 100%;
+   width: 100%;
+   box-shadow: 0 0px 7px rgba(0,0,0,0.5);
+   mix-blend-mode: lighten;
+   rotate: 307deg;
+   background-color: white;
+}
+.first::before,.first::after{
+    background-color: #7536d3;
+}
+.O{
+    position: relative;
+    height: 55px;
+    width: 55px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   animation: reanimate 1.2s linear infinite;
+}
+.Room_container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    z-index: 6;
+    height: 100%;
+    top:0%;
+    width: 50%;
+    right: 0%;
+    background-color: white;
+}
+.Room_container{
+    transform: translateX(100%);
+    transition: all 0.3s ease-in;
+}
+.viewRoomContainer{
+    display: flex;
+    box-shadow: 0 2px 12px 100rem rgba(0,0,0,0.5);
+    transform: translateX(0%);
+    transition: all 0.3s ease-in;
+}
+@keyframes reanimate {
+    0%{
+        scale: 1.1;
+    }
+    50%{
+        scale: 1;
+    }
+    100%{
+        scale: 1.1;
+    }
+}
+.O::before{
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 100%;
+    border-radius: 100%;
+    background-color: #7536d3;
+    z-index: 2;
+}
+.O::after{
+    position: absolute;
+    content: "";
+    height: 100px;
+    width: 100px;
+    border-radius: 100%;
+    background-color: white;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+}
+.contents{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1 0 20rem;
+}
+.support{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4rem;
+    margin: 1rem;
+    padding: 20px;
+    flex-wrap: wrap;
+    border: 0.1rem solid gray;
+    border-radius: 20px;
+}
+.support a{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    font-size: 1.2rem;
+    gap: 0.5rem;
+}
+.support a img{
+    width: 50px;
+    height: 50px;
+}
+.support a p{
+    font-family: "Abel", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    color: black;
+}
+
+#text{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    max-width: 70%;
+}
+#text h1,#support h1,#contact h1{
+    font-size: 2rem;
+    line-height: normal;
+    margin-bottom: 2.5rem;
+    font-family: "Epilogue", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+#text p{
+    font-size: 1.2rem;
+    text-align: left;
+    line-height: 1.5;
+    font-family: "Epilogue", sans-serif;
+    color: gray;
+}
+#support #text,#contact #text{
+    justify-content: center;
+    align-items: center;
+}
+#text p{
+    text-align: center;
+}
+#home #text p{
+    text-align: left;
+} 
+#text button,#Join_Room button,#Create_Room button{
+    font-size: 18px;
+    padding: 1rem 2rem;
+    margin: 1rem 0 1.5rem 0;
+    transition: all .3s linear;
+    color: white;
+    background-color: black;
+    font-weight: 700;
+    border: 1px solid;
+    border-radius: 1rem;
+    cursor:pointer;
+}
+#Join_Room button,#Create_Room button{
+    margin: 0 0 1.5rem 0;
+    padding: 0.5rem 2.5rem;
+}
+
+.heading_tag{
+    text-align: center;
+}
+#Join_Room,#Create_Room{
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    gap: 2rem;
+    position: absolute;
+}
+.Room_container .room_view{
+    transform: translateY(0%);
+    transition: all 0.3s ease-in;
+}
+.Room_container .room_hide{
+    transform: translateY(130%);
+    transition: all 0.3s ease-in;
+}
+#menu{
+    position: absolute;
+    top: 3%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#menu #image_container{
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+}
+#menu img{
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+#close_button{
+    width: 30px;
+    height: 5px;
+    background-color: #494040;
+    rotate: 45deg;
+}
+#close_button::after{
+    content: "";
+    position: absolute;
+    width: 30px;
+    height: 5px;
+    background-color: #494040;
+    rotate: 88deg;
+}
+#input_container{
+    width: 60%;
+    height: 40px;
+    border: 0.1rem solid gray;
+    border-radius: 12px;
+    padding-left: 10px;
+}
+#input_container input{
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: transparent;
+}
+#input_container input:focus{
+    outline: none;
+}
+#button_container{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#button_container p{
+    position: absolute;
+    top: -45px;
+    color: rgb(255 0 0);
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: "Abel", sans-serif;
+    font-style: normal;
+}
+@media (max-width:670px) {
+    #home{
+        margin-top: 20px;
+    }
+    #home .logo{
+        align-items: center;
+    }
+    #home .logo::after{
+        width: 62%;
+        height: 215px;
+    }
+}
+@media (max-width:530px) {
+    #contact .support{
+        border: none;
+        gap: 10px;
+        padding: 10px;
+    }
+    #contact .support a{
+        border: 0.1rem solid gray;
+        padding: 10px;
+        border-radius: 15px;
+    }
+}
+@media (max-width:660px) {
+    .contents{
+        padding-top: 30px;
+    }
+    #text{
+        max-width: 90%;
+    }
+    .X{
+        width: 55px;
+        height: 10px;
+    }
+    .O{
+        width: 30px;
+        height: 30px;
+    }
+    .O::after{
+        width: 60px;
+        height: 60px;
+    }
+    .nav{
+        display: none;
+    }
+    #nav,.nav{
+        display: flex;
+        position: fixed;
+        top: 0;
+        padding: 1rem 2rem 1rem 1rem;
+        right: -1%;
+        transform: translateX(-150%);
+        transition: all 0.5s ease-in;
+         flex-direction: column;
+        background: white;
+        width: 70%;
+    }
+    .Room_container{
+        width: 70%;
+    }
+    .view{
+        transform: translateX(-31%);
+        transition: all 0.5s ease-in;
+        box-shadow: 0 2px 12px 100rem rgb(0 0 0 / 62%);
+    }
+    #navigation_container{
+        margin-left: 10px;
+    }
+    #navigation_button,#navigation_container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        z-index: 5;
+    }
+    .menu_icon{
+       height: 3px;
+       width: 30px;
+       background-color: black;
+    }
+    .menu_icon::before{
+        content: "";
+        position: absolute;
+        height: 3px;
+        top: -10px;
+       width: 30px;
+       background-color: black;
+    }
+    .close{
+        background-color: transparent;
+    }
+    .menu_icon::after{
+        content: "";
+        position: absolute;
+        height: 3px;
+        top: 10px;
+       width: 30px;
+       background-color: black;
+    }
+    .close::before{
+        rotate: 45deg;
+        top: 0;
+    }
+    .close::after{
+        rotate: -45deg;
+        top: 0;
+    }
+    #friends{
+        font-size: 1rem;
+    }
+    .friends{
+        padding: 0.3rem 1rem 0.3rem 1rem;
+    }
+}
