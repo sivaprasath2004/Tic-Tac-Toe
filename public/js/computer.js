@@ -136,4 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
       exit_game.style.display = "flex";
     }
   });
+  exit_game.addEventListener("click", () => {
+    window.location.href = "https://tic-tac-toe-7bj5.onrender.com/";
+  });
 });

@@ -80,7 +80,7 @@ nav h1,#about h1,#Join_Room h1,#Create_Room h1{
     align-items: center;
     padding: 20px;
 }
-#about #text h1{
+#about #text h1,#contact #text h1{
     text-align: center;
 }
 .logo{
@@ -250,16 +250,16 @@ nav h1,#about h1,#Join_Room h1,#Create_Room h1{
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    max-width: 70%;
+    max-width: 75%;
 }
 #text h1,#support h1,#contact h1{
     font-size: 2rem;
-    line-height: normal;
+    line-height: 2.5rem;
     margin-bottom: 2.5rem;
     font-family: "Epilogue", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 600;
-  font-style: normal;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
 }
 #text p{
     font-size: 1.2rem;
@@ -310,11 +310,11 @@ nav h1,#about h1,#Join_Room h1,#Create_Room h1{
 }
 .Room_container .room_view{
     transform: translateY(0%);
-    transition: all 0.3s ease-in;
+    transition: all 0.5s ease-out;
 }
 .Room_container .room_hide{
-    transform: translateY(130%);
-    transition: all 0.3s ease-in;
+    transform: translateY(200%);
+    transition: all 0.3s ease-out;
 }
 #menu{
     position: absolute;
@@ -410,7 +410,7 @@ nav h1,#about h1,#Join_Room h1,#Create_Room h1{
         padding-top: 30px;
     }
     #text{
-        max-width: 90%;
+        max-width: 100%;
     }
     .X{
         width: 55px;
@@ -434,7 +434,7 @@ nav h1,#about h1,#Join_Room h1,#Create_Room h1{
         padding: 1rem 2rem 1rem 1rem;
         right: -1%;
         transform: translateX(-150%);
-        transition: all 0.5s ease-in;
+        transition: all 0.3s ease-in;
          flex-direction: column;
         background: white;
         width: 70%;
@@ -444,7 +444,7 @@ nav h1,#about h1,#Join_Room h1,#Create_Room h1{
     }
     .view{
         transform: translateX(-31%);
-        transition: all 0.5s ease-in;
+        transition: all 0.3s ease-in;
         box-shadow: 0 2px 12px 100rem rgb(0 0 0 / 62%);
     }
     #navigation_container{
