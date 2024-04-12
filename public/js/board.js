@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  let socket = io("http://localhost:5000");
+  let socket = io("https://tic-tac-toe-7bj5.onrender.com");
   let button = document.getElementById("p").innerText;
   let user = document.getElementById("user").innerText;
   let message_Point = document.getElementById("message_Point");
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
   exit_game.addEventListener("click", () => {
-    window.location.href = "http://localhost:5000/";
+    window.location.href = "https://tic-tac-toe-7bj5.onrender.com/";
   });
   //message handle
   let message_icon = document.getElementById("message_icon");

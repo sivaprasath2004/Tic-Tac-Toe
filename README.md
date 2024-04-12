@@ -12,8 +12,6 @@ This project is a multiplayer Tic Tac Toe game with live play functionality. It 
 
 https://github.com/sivaprasath2004/Tic-Tac-Toe/assets/121082414/47ede35e-c07a-4539-a177-8a80d2744e59
 
-
-
 ## Installation
 
 1. Clone this repository: `git clone https://github.com/sivaprasath2004/Tic-Tac-Toe.git`
@@ -23,7 +21,7 @@ https://github.com/sivaprasath2004/Tic-Tac-Toe/assets/121082414/47ede35e-c07a-45
 ## Usage
 
 1. Start the server: `node server.js`
-2. Open your browser and go to `http://localhost:5000`
+2. Open your browser and go to `https://tic-tac-toe-7bj5.onrender.com`
 3. Enter your name and wait for another player to join.
 4. Once both players have joined, the game will start automatically.
 5. Players take turns marking the cells with their respective symbols (X or O).
@@ -46,4 +44,3 @@ Special thanks to Socket.io for providing the real-time communication functional
 - Implement a chat feature for players to communicate during the game.
 - Add a leaderboard to track players' scores.
 - Allow players to customize their symbols or avatars.
-

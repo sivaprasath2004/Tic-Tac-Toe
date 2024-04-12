@@ -1,4 +1,4 @@
-let socket = io("http://localhost:5000");
+let socket = io("https://tic-tac-toe-7bj5.onrender.com");
 setInterval(() => {
   let time_tag = document.getElementById("time");
   let time = new Date();
