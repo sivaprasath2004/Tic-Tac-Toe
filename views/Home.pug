@@ -3,91 +3,283 @@ head
   meta(charset='UTF-8')
   meta(name='viewport' content='width=device-width, initial-scale=1.0')
   link(rel='stylesheet' href='About.css')
-  title #{title}
-.Room_container
-  #menu
-    #image_container
-      img#roomimage_toggle.join(src='https://cdn-icons-png.flaticon.com/128/9055/9055030.png' alt='image')
-    #close_button
-  #Join_Room.room_view
-    h1 Join Room
-    #input_container
-      input#join_room_Room_id.input(type='text' placeholder='Room id')
-    #input_container
-      input#join_room_input_name.input(type='text' placeholder='name')
-    #button_container
-      p#errors
-      button#join_room_button Join
-  #Create_Room.room_hide
-    h1 Create Room
-    #input_container
-      input#time.input(type='text' readonly='')
-    #input_container
-      input#create_room_input_name.input(type='text' placeholder='name')
-    #button_container
-      button#create_room_button Create
+  title Tic-Tac-Toe
+
+//- overlay
+.room-overlay#room-overlay
+
+//- Room side panel
+.Room_container#Room_container
+  .room-panel-header
+    span.room-panel-title Online Play
+    button#close_button(type='button' aria-label='Close')
+
+  .room-tabs
+    button.room-tab.active#tab-join(type='button') Join Room
+    button.room-tab#tab-create(type='button') Create Room
+
+  .room-panel-body
+    //- JOIN
+    #Join_Room.room_view
+      .panel-section-label Join a Room
+      p.panel-section-sub Enter your friend's room ID to jump in.
+
+      .room-divider Or enter details below
+      br
+
+      .field-group
+        label.field-label(for='join_room_Room_id') Room ID
+        #input_container
+          input#join_room_Room_id(type='text' placeholder='e.g. abc123xyz')
+
+      .field-group
+        label.field-label(for='join_room_input_name') Your Name
+        #input_container
+          input#join_room_input_name(type='text' placeholder='Enter your name')
+
+      #button_container
+        p#errors
+        button#join_room_button Join Room →
+
+    //- CREATE
+    #Create_Room.room_hide
+      .panel-section-label Create a Room
+      p.panel-section-sub Share the room ID with a friend to play together.
+
+      .field-group
+        label.field-label Current Time
+        #input_container
+          input#time(type='text' readonly='')
+
+      .field-group
+        label.field-label(for='create_room_input_name') Your Name
+        #input_container
+          input#create_room_input_name(type='text' placeholder='Enter your name')
+
+      #button_container
+        button#create_room_button Create Room →
+
+//- Main page
 .home_Page
   nav
+    .nav-brand
+      span.nav-brand-icon ✕
+      | Tic-Tac-Toe
     #navigation_container
       h1#navigation_button.menu_icon
-    #view.nav
+    .nav-links#view
       a(href='#about') About
       a(href='#support') Support
       a(href='#contact') Contact
-    .friends
-      h1#friends Friends
+    .nav-actions
+      a.nav-btn-ghost(href='#about') Learn more
+      button.friends#friends-btn(type='button') Play Online
+
   section#home
-    .contents
-      #text
-        h1 Challenge your mind, conquer the grid, play Tic-Tac-Toe! 
-        p
-          | Face off against the computer in a battle of wit and strategy. Can you outsmart the AI and claim victory in Tic-Tac-Toe?
-        button#play_with_computer_button Computer Mode
-    .logo
-      div
-        p.X.first
-        p.O
-      div
-        p.O
-        p.X
+    .home-text
+      .eyebrow
+        span.eyebrow-dot
+        | Strategy · AI · Multiplayer
+      h1 Challenge your mind. Conquer the grid.
+      p
+        | Face off against an adaptive AI or invite a friend to play in real-time.
+        | Simple rules. Deep strategy. Every grid is a new battle.
+      .home-actions
+        button#play_with_computer_button.btn-primary ▶ Play vs Computer
+        button.btn-outline#open-online-btn(type='button') Play Online →
+
+      .home-stats
+        .stat-item
+          span.stat-num 3×3
+          span.stat-label Grid Size
+        .stat-item
+          span.stat-num 2
+          span.stat-label Game Modes
+        .stat-item
+          span.stat-num ∞
+          span.stat-label Rematches
+
+    .home-visual
+      .board-preview
+        .preview-cell.win X
+        .preview-cell.o O
+        .preview-cell.x X
+        .preview-cell.o O
+        .preview-cell.win X
+        .preview-cell
+        .preview-cell
+        .preview-cell.o O
+        .preview-cell.win X
+
   section#about
-    h1.heading_tag About
-    .about
-      .contents
-        #text
-          h1
-            | Discover the story behind the game, where creativity meets code, on our captivating About page.
+    .about-left
+      p.section-eyebrow About the Game
+      h2.section-title The classic game, elevated.
+      p.section-body
+        | Tic-Tac-Toe has been played for centuries. We've brought it online
+        | with real-time multiplayer, a smart AI opponent, and in-game chat —
+        | keeping the simplicity while adding depth.
+
+      .about-features
+        .feature-item
+          .feature-icon ⚡
+          .feature-text
+            h4 Instant Matchmaking
+            p Share a room ID and your friend can join in seconds — no signup needed.
+        .feature-item
+          .feature-icon 🤖
+          .feature-text
+            h4 Smart AI Opponent
+            p The computer plays strategically — blocking your wins and going for its own.
+        .feature-item
+          .feature-icon 💬
+          .feature-text
+            h4 Real-time Chat
+            p Talk to your opponent mid-game. Trash talk, tips, or just say hi.
+
+    .about-right
+      .mode-cards
+        .mode-card
+          .mode-card-header
+            span.mode-badge Single Player
+            h3 vs Computer
           p
-            | Embark on a nostalgic journey with our faithful adaptation of Tic-Tac-Toe, embracing its traditional rules while offering the thrill of playing against AI or friends. Elevate your gaming experience further by engaging in lively conversations with companions right from the gameplay interface.
+            | Jump straight into a game against an AI that challenges your strategy.
+            | Great for practice or a quick solo session anytime.
+        .mode-card
+          .mode-card-header
+            span.mode-badge Multiplayer
+            h3 Online Rooms
+          p
+            | Create a private room and share the ID with anyone in the world.
+            | Play together in real-time with live game state sync.
+        .mode-card
+          .mode-card-header
+            span.mode-badge Open Source
+            h3 Fully Hackable
+          p
+            | Built with Node.js, Socket.io and Pug. Fork it, modify it,
+            | or use it as a foundation for your own real-time game.
+
   section#support
-    h1 Support
-    #text
-      h1 Follow &amp; Build Site
-      p
-        | For assistance, utilize our GitHub support page to access
-        | repositories, commit changes, and craft your unique site. Our
-        | comprehensive resources and community guidance ensure smooth
-        | navigation and seamless development. Join our support network on
-        | GitHub today and unleash your creativity in building your own site!
-    .support
-      a.repository(href='https://github.com/sivaprasath2004/Tic-Tac-Toe')
-        img(src='https://cdn-icons-png.flaticon.com/128/6878/6878122.png' alt='github')
-        p Repository
-      a.github(href='https://github.com/sivaprasath2004')
-        img(src='https://cdn-icons-png.flaticon.com/128/2111/2111432.png' alt='github')
-        p Github
+    .support-inner
+      .support-left
+        p.section-eyebrow Resources
+        h2.section-title Get started in minutes.
+        p.section-body
+          | Everything you need to run the project locally, deploy it, or
+          | contribute is available on GitHub. Here's how to get going:
+
+        .support-steps
+          .step
+            .step-num 1
+            .step-content
+              h4 Clone the repository
+              p Run #[code git clone https://github.com/sivaprasath2004/Tic-Tac-Toe]
+          .step
+            .step-num 2
+            .step-content
+              h4 Install dependencies
+              p Run #[code npm install] in the project directory.
+          .step
+            .step-num 3
+            .step-content
+              h4 Start the server
+              p Run #[code npm start] and open #[code localhost:5000] in your browser.
+          .step
+            .step-num 4
+            .step-content
+              h4 Play or deploy
+              p Share your room ID locally, or deploy to Render / Railway in one click.
+
+      .support-right
+        .support-links
+          a.support-link-card(href='https://github.com/sivaprasath2004/Tic-Tac-Toe')
+            .support-link-icon
+              img(src='https://cdn-icons-png.flaticon.com/128/6878/6878122.png' alt='github')
+            .support-link-info
+              h4 View Repository
+              p Browse source code, issues and pull requests
+            span.support-link-arrow →
+          a.support-link-card(href='https://github.com/sivaprasath2004')
+            .support-link-icon
+              img(src='https://cdn-icons-png.flaticon.com/128/2111/2111432.png' alt='github')
+            .support-link-info
+              h4 GitHub Profile
+              p See other projects by the author
+            span.support-link-arrow →
+          a.support-link-card(href='https://github.com/sivaprasath2004/Tic-Tac-Toe/issues')
+            .support-link-icon
+              img(src='https://cdn-icons-png.flaticon.com/128/1828/1828961.png' alt='bug')
+            .support-link-info
+              h4 Report an Issue
+              p Found a bug or have a feature request?
+            span.support-link-arrow →
+
   section#contact
-    h1 Contact
-    #text
-      h1 Experience &amp; Guidance
-      p
-        | If you encounter any issues or have questions, please don&apos;t hesitate to reach out to us. Your satisfaction is our priority, and we&apos;rehere to assist you every step of the way. Contact us anytime for prompt and reliable support.Your feedback is invaluable to us, and we&apos;re committed to resolving any concerns you may have promptly.
-    .support
-      a(href='mailto:prasathsiva2004@gmail.com')
-        img(src='https://cdn-icons-png.flaticon.com/128/6244/6244710.png' alt='mail')
-        p prasathsiva2004@gmail.com
-      a(href='https://in.linkedin.com/in/sivaprasath2004')
-        img(src='https://cdn-icons-png.flaticon.com/128/1384/1384014.png' alt='linkedin')
-        p linkedin
+    .contact-inner
+      .contact-left
+        p.section-eyebrow Get in Touch
+        h2.section-title We'd love to hear from you.
+        p.section-body
+          | Have a question, idea, or just want to say hello?
+          | Reach out through any of these channels and we'll get back to you soon.
+        .contact-info
+          a.contact-item(href='mailto:prasathsiva2004@gmail.com')
+            .contact-item-icon
+              img(src='https://cdn-icons-png.flaticon.com/128/6244/6244710.png' alt='email')
+            .contact-item-text
+              h4 Email
+              p prasathsiva2004@gmail.com
+          a.contact-item(href='https://in.linkedin.com/in/sivaprasath2004')
+            .contact-item-icon
+              img(src='https://cdn-icons-png.flaticon.com/128/1384/1384014.png' alt='linkedin')
+            .contact-item-text
+              h4 LinkedIn
+              p Connect professionally
+          a.contact-item(href='https://github.com/sivaprasath2004')
+            .contact-item-icon
+              img(src='https://cdn-icons-png.flaticon.com/128/2111/2111432.png' alt='github')
+            .contact-item-text
+              h4 GitHub
+              p Follow for updates
+
+      .contact-right
+        p.section-eyebrow FAQ
+        h2.section-title Common questions
+        .faq-list
+          .faq-item
+            button.faq-q(type='button')
+              span Is this free to use?
+              span.faq-chevron ▼
+            .faq-a Yes! The game is completely free and open source under the MIT licence.
+          .faq-item
+            button.faq-q(type='button')
+              span Do I need an account to play?
+              span.faq-chevron ▼
+            .faq-a No account needed. Just enter a name, create or join a room and start playing instantly.
+          .faq-item
+            button.faq-q(type='button')
+              span Can I run this locally?
+              span.faq-chevron ▼
+            .faq-a Absolutely. Clone the repo, run npm install and npm start — it's up in under a minute.
+          .faq-item
+            button.faq-q(type='button')
+              span How does the AI work?
+              span.faq-chevron ▼
+            .faq-a The computer uses a simple strategy: it tries to win first, then blocks your winning moves, then picks the center or a random open cell.
+          .faq-item
+            button.faq-q(type='button')
+              span Can I contribute to the project?
+              span.faq-chevron ▼
+            .faq-a Yes! Open an issue or pull request on GitHub. All contributions are welcome.
+
+  footer
+    p © 2024 Tic-Tac-Toe · Built with Node.js & Socket.io
+    .footer-links
+      a(href='#about') About
+      a(href='https://github.com/sivaprasath2004/Tic-Tac-Toe') GitHub
+      a(href='mailto:prasathsiva2004@gmail.com') Contact
+
 script(src='/socket.io/socket.io.js')
 script(src='js/script.js')

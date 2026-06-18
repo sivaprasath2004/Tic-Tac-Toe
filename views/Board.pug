@@ -1,53 +1,69 @@
 doctype html
-html(lang="en")
+html(lang='en')
   head
-    meta(charset="UTF-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title #{title}
-    link(rel="stylesheet", href="Board.css")
+    meta(charset='UTF-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    title= title === 'Computer' ? 'vs Computer · Tic-Tac-Toe' : 'Game Room · Tic-Tac-Toe'
+    link(rel='stylesheet' href='Board.css')
     script(src='/socket.io/socket.io.js')
   body
     header
-      div(id="name")
-        h1 Tic Tac Toe
-      div(id="logout")
-        img(src="https://cdn-icons-png.flaticon.com/128/2311/2311524.png", alt="menu", id="menu",class="menu")
-        img(src="https://cdn-icons-png.flaticon.com/128/4400/4400629.png", alt="logout", id="exit")
-  if title!=="Computer"
-    div(id="more")
-      p(id="p") Id:#{id}
-      button(id='copy')
-        img(src="https://cdn-icons-png.flaticon.com/128/1620/1620767.png", alt="share", id="copy_icon")
-        p(id="copy_text") copy
-      button(id='share')
-        img(src="https://cdn-icons-png.flaticon.com/128/929/929539.png", alt="share", id="share_icon")
-  button(id='exit_game') Exit
-  if title!=="Computer"
-    div(id="profiles")
-      div(id="profile")
-        p(id="name") #{name[0]}
-      div(id="player_turn") Your Turn
-      
-  div(id="board")
-      // Game board cells
-      div(class="cell", id=0)
-      div(class="cell", id=1)
-      div(class="cell", id=2)
-      div(class="cell", id=3)
-      div(class="cell", id=4)
-      div(class="cell", id=5)
-      div(class="cell", id=6)
-      div(class="cell", id=7)
-      div(class="cell", id=8)
-  if title!=="Computer"
-    p(id="user") #{name}
-    div(class="message_icon")
-      img(src="https://cdn-icons-png.flaticon.com/128/134/134718.png", alt="message", id="message_icon")
-    div(id="message")
-      div(id="message_Point")
-      div(id="input")
-        input(id="message_input", type="text", placeholder="message")
-        img(src="https://cdn-icons-png.flaticon.com/128/10426/10426419.png", alt="send", id="send_message")
-    script(src="js/board.js")
-  if title==="Computer"
-    script(src="js/computer.js")
+      div(style='width:60px')
+      div#name
+        span.header-brand
+          span.header-brand-icon ✕
+          |  Tic-Tac-Toe
+      div#logout
+        img(src='https://cdn-icons-png.flaticon.com/128/2311/2311524.png' alt='room info' id='menu')
+        img(src='https://cdn-icons-png.flaticon.com/128/4400/4400629.png' alt='exit'      id='exit')
+
+    if title !== 'Computer'
+      div#more
+        p#p ID: #{id}
+        button#copy(type='button')
+          img(src='https://cdn-icons-png.flaticon.com/128/1620/1620767.png' alt='copy' id='copy_icon')
+          p#copy_text Copy Room ID
+        button#share(type='button')
+          img(src='https://cdn-icons-png.flaticon.com/128/929/929539.png' alt='share')
+          | Share
+
+    button#exit_game(type='button') Exit Game
+
+    if title !== 'Computer'
+      div#profiles
+        div#profile
+          p= name ? name[0].toUpperCase() : '?'
+        div#player_turn Waiting…
+
+    div.board-wrap
+      div#board
+        - for (var i = 0; i < 9; i++)
+          div.cell(id='' + i)
+
+    if title !== 'Computer'
+      //- Hidden name reference for JS
+      p#user(style='display:none')= name
+
+      //- Floating chat button
+      div.message_icon
+        div#message_icon
+          span#chat_badge
+          img(src='https://cdn-icons-png.flaticon.com/128/134/134718.png' alt='open chat')
+
+      //- Chat panel
+      div#message
+        div.chat-header
+          div.chat-header-title
+            span.chat-online-dot
+            | Chat
+          button.chat-close#chat_close(type='button') ✕
+        div#message_Point
+        div#input
+          input#message_input(type='text' placeholder='Type a message…' autocomplete='off')
+          button#send_message(type='button')
+            img(src='https://cdn-icons-png.flaticon.com/128/10426/10426419.png' alt='send')
+
+      script(src='js/board.js')
+
+    if title === 'Computer'
+      script(src='js/computer.js')

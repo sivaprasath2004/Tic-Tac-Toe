@@ -1,106 +1,124 @@
 let socket = io("https://tic-tac-toe-7bj5.onrender.com");
+
+// ── Clock ──
 setInterval(() => {
-  let time_tag = document.getElementById("time");
-  let time = new Date();
-  let hours = time.getHours();
-  let mins = time.getMinutes();
-  let secs = time.getSeconds();
-  let min = mins < 10 ? "0" + mins : mins;
-  let sec = secs < 10 ? "0" + secs : secs;
-  let hour = hours > 12 ? hours - 12 : hours;
-  let AMPM = hours > 12 ? "PM" : "AM";
-  time_tag.value = `${hour < 10 ? "0" + hour : hour}:${min}:${sec} ${AMPM}`;
+  const el = document.getElementById("time");
+  if (!el) return;
+  const t = new Date();
+  let h = t.getHours(), m = t.getMinutes(), s = t.getSeconds();
+  const ampm = h >= 12 ? "PM" : "AM";
+  h = h > 12 ? h - 12 : h === 0 ? 12 : h;
+  el.value = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ampm}`;
 }, 1000);
-let navigation = document.getElementById("navigation_container");
-let navigate = document.getElementById("navigation_button");
-let nav = document.getElementById("view");
-let room_button = document.querySelector(".friends");
-let room_container = document.querySelector(".Room_container");
-let close_button = document.getElementById("close_button");
-let roomimage_toggle = document.getElementById("roomimage_toggle");
-let Join_Room = document.getElementById("Join_Room");
-let Create_Room = document.getElementById("Create_Room");
-navigation.addEventListener("click", handle_navigation);
-function handle_navigation() {
-  if (nav.classList.contains("view")) {
-    nav.classList.remove("view");
-    nav.style.height = window.screen.height + "px";
-    navigate.classList.remove("close");
-    room_button.addEventListener("click", handle_room_container);
+
+// ── Panel helpers ──
+const overlay       = document.getElementById("room-overlay");
+const room_panel    = document.getElementById("Room_container");
+const close_btn     = document.getElementById("close_button");
+const tab_join      = document.getElementById("tab-join");
+const tab_create    = document.getElementById("tab-create");
+const Join_Room     = document.getElementById("Join_Room");
+const Create_Room   = document.getElementById("Create_Room");
+
+function openPanel() {
+  room_panel.classList.add("viewRoomContainer");
+  overlay.classList.add("active");
+}
+function closePanel() {
+  room_panel.classList.remove("viewRoomContainer");
+  overlay.classList.remove("active");
+}
+function showTab(tab) {
+  if (tab === "join") {
+    Join_Room.className   = "room_view";
+    Create_Room.className = "room_hide";
+    tab_join.classList.add("active");
+    tab_create.classList.remove("active");
   } else {
-    nav.classList.add("view");
-    nav.style.height = window.screen.height + "px";
-    navigate.classList.add("close");
-    room_button.removeEventListener("click", handle_room_container);
+    Create_Room.className = "room_view";
+    Join_Room.className   = "room_hide";
+    tab_create.classList.add("active");
+    tab_join.classList.remove("active");
   }
 }
-function handle_room_container() {
-  room_container.classList.add("viewRoomContainer");
-  navigation.removeEventListener("click", handle_navigation);
-}
-room_button.addEventListener("click", handle_room_container);
-close_button.addEventListener("click", () => {
-  room_container.classList.remove("viewRoomContainer");
-  navigation.addEventListener("click", handle_navigation);
+
+// Open panel buttons
+document.querySelectorAll(".friends, #friends-btn, #open-online-btn").forEach(el =>
+  el?.addEventListener("click", openPanel)
+);
+close_btn?.addEventListener("click", closePanel);
+overlay?.addEventListener("click", closePanel);
+tab_join?.addEventListener("click",   () => showTab("join"));
+tab_create?.addEventListener("click", () => showTab("create"));
+
+// ── Mobile nav ──
+const nav_container = document.getElementById("navigation_container");
+const nav_btn       = document.getElementById("navigation_button");
+const nav_links     = document.getElementById("view");
+
+nav_container?.addEventListener("click", () => {
+  const open = nav_links.classList.toggle("open");
+  nav_btn?.classList.toggle("close", open);
 });
-function handle_click() {
-  if (roomimage_toggle.classList.contains("create")) {
-    roomimage_toggle.classList.remove("create");
-    Create_Room.classList.remove("room_view");
-    Join_Room.classList.remove("room_hide");
-    Join_Room.classList.add("room_view");
-    Create_Room.classList.add("room_hide");
-    roomimage_toggle.setAttribute(
-      "src",
-      "https://cdn-icons-png.flaticon.com/128/9055/9055030.png"
-    );
-  } else {
-    roomimage_toggle.classList.add("create");
-    Create_Room.classList.add("room_view");
-    Join_Room.classList.add("room_hide");
-    Join_Room.classList.remove("room_view");
-    Create_Room.classList.remove("room_hide");
-    roomimage_toggle.setAttribute(
-      "src",
-      "https://cdn-icons-png.flaticon.com/128/3394/3394785.png"
-    );
-  }
-}
-roomimage_toggle.addEventListener("click", handle_click);
-let button = document.getElementById("create_room_button");
-button.addEventListener("click", () => {
-  let name = document.getElementById("create_room_input_name").value + "1";
-  if (name.length > 1) {
-    socket.emit("join", { name: name }, ({ id, error }) => {
-      if (error === "ok") {
-        window.location.href = `/board?id=${id}&name=${name}`;
-      }
-    });
-  }
+
+// Close nav on link click
+nav_links?.querySelectorAll("a").forEach(a =>
+  a.addEventListener("click", () => {
+    nav_links.classList.remove("open");
+    nav_btn?.classList.remove("close");
+  })
+);
+
+// ── FAQ accordion ──
+document.querySelectorAll(".faq-q").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const answer = btn.nextElementSibling;
+    const isOpen = answer.classList.contains("open");
+    // close all
+    document.querySelectorAll(".faq-a").forEach(a => a.classList.remove("open"));
+    document.querySelectorAll(".faq-q").forEach(b => b.classList.remove("open"));
+    if (!isOpen) {
+      answer.classList.add("open");
+      btn.classList.add("open");
+    }
+  });
 });
-let join_button = document.getElementById("join_room_button");
-join_button.addEventListener("click", () => {
-  let join_room_input_name =
-    document.getElementById("join_room_input_name").value + "2";
-  let join_room_Room_id = document.getElementById("join_room_Room_id").value;
-  let error_display = document.getElementById("errors");
-  if (join_room_Room_id && join_room_input_name.length > 1) {
-    socket.emit(
-      "joinRoom",
-      { id: join_room_Room_id, name: join_room_input_name },
-      ({ id, error }) => {
-        if (error) {
-          error_display.textContent = error;
-        } else {
-          window.location.href = `/board?id=${id}&name=${join_room_input_name}`;
-        }
-      }
-    );
-  } else {
-    null;
-  }
+
+// ── Create Room ──
+document.getElementById("create_room_button")?.addEventListener("click", () => {
+  const name = document.getElementById("create_room_input_name")?.value.trim();
+  if (!name) return;
+  socket.emit("join", { name: name + "1" }, ({ id, error }) => {
+    if (error === "ok") window.location.href = `/board?id=${id}&name=${name + "1"}`;
+  });
 });
-let computer_play = document.getElementById("play_with_computer_button");
-computer_play.addEventListener("click", () => {
+
+// ── Join Room ──
+document.getElementById("join_room_button")?.addEventListener("click", () => {
+  const name   = document.getElementById("join_room_input_name")?.value.trim();
+  const roomId = document.getElementById("join_room_Room_id")?.value.trim();
+  const errEl  = document.getElementById("errors");
+  if (!name || !roomId) {
+    if (errEl) errEl.textContent = "Please fill in all fields.";
+    return;
+  }
+  socket.emit("joinRoom", { id: roomId, name: name + "2" }, ({ id, error }) => {
+    if (error) { if (errEl) errEl.textContent = error; }
+    else window.location.href = `/board?id=${id}&name=${name + "2"}`;
+  });
+});
+
+// Allow Enter key in room fields
+["join_room_input_name","join_room_Room_id"].forEach(id => {
+  document.getElementById(id)?.addEventListener("keydown", e => {
+    if (e.key === "Enter") document.getElementById("join_room_button")?.click();
+  });
+});
+document.getElementById("create_room_input_name")?.addEventListener("keydown", e => {
+  if (e.key === "Enter") document.getElementById("create_room_button")?.click();
+});
+
+// ── Computer mode ──
+document.getElementById("play_with_computer_button")?.addEventListener("click", () => {
   window.location.href = "/computer";
 });

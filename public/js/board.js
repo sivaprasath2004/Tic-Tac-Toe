@@ -1,309 +1,321 @@
 document.addEventListener("DOMContentLoaded", () => {
-  let socket = io("https://tic-tac-toe-7bj5.onrender.com");
-  let button = document.getElementById("p").innerText;
-  let user = document.getElementById("user").innerText;
-  let message_Point = document.getElementById("message_Point");
-  let RoomId = button.split(":").pop();
-  socket.emit("mainCoonection", { id: RoomId, name: user }, () => {});
-  socket.on("message", (msg) => {
-    let chat_container = document.createElement("div");
-    opp = msg.user;
-    chat_container.setAttribute(
-      "id",
-      msg.user === "admin"
-        ? "center_container"
-        : msg.user === user
-        ? "me_container"
-        : "you_container"
-    );
-    let chats = document.createElement("p");
-    chats.textContent = msg.text;
-    chats.setAttribute(
-      "id",
-      msg.user === "admin" ? "center" : msg.user === user ? "me" : "you"
-    );
-    chat_container.appendChild(chats);
-    message_Point.appendChild(chat_container);
+  const socket    = io("https://tic-tac-toe-7bj5.onrender.com");
+  const roomIdRaw = (document.getElementById("p")?.innerText || "").replace("ID:", "").trim();
+  const user      = (document.getElementById("user")?.innerText || "").trim();
+  const msgPoint  = document.getElementById("message_Point");
+  const RoomId    = roomIdRaw;
+
+  let gameActive    = false;
+  let currentPlayer = "X";
+  let move_player;
+  let clickHandler;
+  const cells = document.querySelectorAll(".cell");
+
+  socket.emit("mainCoonection", { id: RoomId, name: user });
+
+  // ════════════════════════════════════════
+  //  CHAT
+  // ════════════════════════════════════════
+  const chatPanel  = document.getElementById("message");
+  const chatIcon   = document.getElementById("message_icon");
+  const chatBadge  = document.getElementById("chat_badge");
+  const chatClose  = document.getElementById("chat_close");
+  const msgInput   = document.getElementById("message_input");
+  const sendBtn    = document.getElementById("send_message");
+
+  function openChat() {
+    chatPanel?.classList.add("chat-open");
+    if (chatBadge) chatBadge.style.display = "none";
+    msgInput?.focus();
+  }
+  function closeChat() {
+    chatPanel?.classList.remove("chat-open");
+  }
+
+  chatIcon?.addEventListener("click", () => {
+    chatPanel?.classList.contains("chat-open") ? closeChat() : openChat();
   });
-  let copy = document.getElementById("copy");
-  copy.addEventListener("click", () => {
-    let button = document.getElementById("p").innerText;
+  chatClose?.addEventListener("click", closeChat);
+
+  // Receive message
+  socket.on("message", (msg) => {
+    if (!msgPoint) return;
+
+    const row = document.createElement("div");
+
+    if (msg.user === "admin") {
+      row.className   = "msg-center";
+      row.textContent = msg.text;
+    } else {
+      const isMe = msg.user === user;
+      row.className   = isMe ? "msg-me" : "msg-you";
+      const bub       = document.createElement("span");
+      bub.className   = isMe ? "bubble-me" : "bubble-you";
+      bub.textContent = msg.text;
+      row.appendChild(bub);
+    }
+
+    msgPoint.appendChild(row);
+    msgPoint.scrollTop = msgPoint.scrollHeight;
+
+    // Show badge if chat is closed
+    if (!chatPanel?.classList.contains("chat-open") && chatBadge) {
+      chatBadge.style.display = "block";
+    }
+  });
+
+  // Send message
+  const doSend = () => {
+    const text = msgInput?.value.trim();
+    if (!text) return;
+    socket.emit("sendMes", { id: RoomId, user, text });
+    msgInput.value = "";
+    msgInput.focus();
+  };
+  sendBtn?.addEventListener("click", doSend);
+  msgInput?.addEventListener("keydown", e => { if (e.key === "Enter") doSend(); });
+
+  // ════════════════════════════════════════
+  //  HEADER DROPDOWNS
+  // ════════════════════════════════════════
+  const menuBtn  = document.getElementById("menu");
+  const exitBtn  = document.getElementById("exit");
+  const moreEl   = document.getElementById("more");
+  const exitGame = document.getElementById("exit_game");
+
+  function hideDropdowns() {
+    if (moreEl)   moreEl.style.display   = "none";
+    if (exitGame) exitGame.style.display  = "none";
+  }
+
+  menuBtn?.addEventListener("click", e => {
+    e.stopPropagation();
+    if (exitGame) exitGame.style.display = "none";
+    if (moreEl) moreEl.style.display = moreEl.style.display === "flex" ? "none" : "flex";
+  });
+  exitBtn?.addEventListener("click", e => {
+    e.stopPropagation();
+    if (moreEl) moreEl.style.display = "none";
+    if (exitGame) exitGame.style.display = exitGame.style.display === "flex" ? "none" : "flex";
+  });
+  exitGame?.addEventListener("click", () => { window.location.href = "/"; });
+  document.addEventListener("click", hideDropdowns);
+
+  // Copy room ID
+  document.getElementById("copy")?.addEventListener("click", e => {
+    e.stopPropagation();
     navigator.clipboard.writeText(RoomId);
-    let copy_text = document.getElementById("copy_text");
-    let copy_icon = document.getElementById("copy_icon");
-    copy_icon.setAttribute(
-      "src",
-      "https://cdn-icons-png.flaticon.com/128/5291/5291043.png"
-    );
-    copy_text.textContent = "copied";
+    const txt  = document.getElementById("copy_text");
+    const icon = document.getElementById("copy_icon");
+    if (icon) icon.src = "https://cdn-icons-png.flaticon.com/128/5291/5291043.png";
+    if (txt)  txt.textContent = "Copied!";
     setTimeout(() => {
-      copy_icon.setAttribute(
-        "src",
-        "https://cdn-icons-png.flaticon.com/128/1620/1620767.png"
-      );
-      copy_text.textContent = "copy";
+      if (icon) icon.src = "https://cdn-icons-png.flaticon.com/128/1620/1620767.png";
+      if (txt)  txt.textContent = "Copy Room ID";
     }, 1500);
   });
 
-  let menu = document.getElementById("menu");
-  let more = document.getElementById("more");
-  let exit_game = document.getElementById("exit_game");
-  let exit = document.getElementById("exit");
-  menu.addEventListener("click", () => {
-    exit_game.style.display = "none";
-    if (more.style.display === "flex") {
-      more.style.display = "none";
-    } else {
-      more.style.display = "flex";
-    }
-  });
-  exit.addEventListener("click", () => {
-    more.style.display = "none";
-    if (exit_game.style.display === "flex") {
-      exit_game.style.display = "none";
-    } else {
-      exit_game.style.display = "flex";
-    }
-  });
-  exit_game.addEventListener("click", () => {
-    window.location.href = "https://tic-tac-toe-7bj5.onrender.com/";
-  });
-  //message handle
-  let message_icon = document.getElementById("message_icon");
-  let messages = document.getElementById("send_message");
-  let message_container = document.getElementById("message");
-  const cells = document.querySelectorAll(".cell");
-  message_icon.addEventListener("click", () => {
-    if (message_container.style.display === "flex") {
-      message_container.style.display = "none";
-    } else {
-      message_container.style.display = "flex";
-    }
-  });
-  messages.addEventListener("click", () => {
-    let text = document.getElementById("message_input").value;
-    socket.emit(
-      "sendMes",
-      { id: button.split(":").pop(), user: user, text: text },
-      () => {}
-    );
-    document.getElementById("message_input").value = "";
-  });
-  // game concept
-  let gameEnd = false;
-  let winner = document.createElement("p");
-  let checker = false;
-  socket.emit("opponent", { id: RoomId, name: user }, (msg) => {
-    msg?.res === "ok" ? (checker = true) : null;
-    if (checker) {
-      null;
-    } else {
-      waitingoppenent();
-    }
-  });
-  let currentPlayer = "X";
-  let secondPlayer;
-  socket.on("start", (start) => {
-    start !== undefined ? (checker = true) : null;
-    secondPlayer = start.player2;
-    gameLogic(start.player1, start.player2);
-    if (checker) {
-      let opponent = document.querySelector(".oppenent");
-      if (document.querySelector(".oppenent")) {
-        document.body.removeChild(opponent);
-      }
-    }
-  });
-  function waitingoppenent() {
-    winner.classList.add("oppenent");
-    winner.textContent = "find your oppnent".toUpperCase();
-    document.body.appendChild(winner);
+  // ════════════════════════════════════════
+  //  BOARD LOCK / UNLOCK
+  // ════════════════════════════════════════
+
+  // Lock every cell — no cursor, no pointer events
+  function lockBoard() {
+    gameActive = false;
+    cells.forEach(cell => {
+      cell.removeEventListener("click", clickHandler);
+      cell.style.cursor        = "default";
+      cell.style.pointerEvents = "none";
+    });
+    const ind = document.getElementById("player_turn");
+    if (ind) { ind.textContent = "Game Over"; ind.className = ""; }
   }
+
+  // Enable only empty cells for the current player
+  function enableBoard() {
+    gameActive = true;
+    cells.forEach(cell => {
+      cell.removeEventListener("click", clickHandler);
+      cell.style.cursor        = "";
+      cell.style.pointerEvents = "";
+      if (!cell.classList.contains("player-X") && !cell.classList.contains("player-O")) {
+        cell.addEventListener("click", clickHandler);
+        cell.style.cursor = "pointer";
+      } else {
+        cell.style.cursor = "default";
+      }
+    });
+  }
+
+  // Disable all cells — opponent's turn
+  function disableBoard() {
+    cells.forEach(cell => {
+      cell.removeEventListener("click", clickHandler);
+      cell.style.cursor        = "not-allowed";
+      cell.style.pointerEvents = "none";
+    });
+  }
+
+  // ════════════════════════════════════════
+  //  GAME EVENTS
+  // ════════════════════════════════════════
+  socket.emit("opponent", { id: RoomId, name: user }, (msg) => {
+    if (!msg || msg.res !== "ok") showWaiting();
+  });
+
+  function showWaiting() {
+    const el   = document.createElement("div");
+    el.classList.add("oppenent");
+    el.id      = "waiting-el";
+    const spin = document.createElement("div");
+    spin.classList.add("spinner");
+    el.appendChild(spin);
+    el.appendChild(Object.assign(document.createElement("span"), { textContent: "Waiting for opponent…" }));
+    document.body.appendChild(el);
+  }
+
+  socket.on("start", (start) => {
+    document.getElementById("waiting-el")?.remove();
+    document.querySelector(".oppenent")?.remove();
+    gameLogic(start.player1, start.player2);
+  });
 
   socket.on("player", (moves) => {
     const cell = document.getElementById(`${moves.cell}`);
+    if (!cell) return;
+
+    // Mark the cell
     cell.textContent = moves.currentsimbol;
     cell.classList.add(moves.currentsimbol === "X" ? "player-X" : "player-O");
+    cell.style.cursor = "default";
+    cell.style.pointerEvents = "none";
+    cell.removeEventListener("click", clickHandler);
+
     currentPlayer = moves.currentsimbol;
-    let gameEnd = false;
-    if (checkDraw()) {
-      winner.classList.add("winners");
-      Draw();
-      gameEnd = true;
-      return;
-    }
-    if (checkWinner()) {
-      winner.classList.add("winners");
-      player_winner(moves.old_player);
-      gameEnd = true;
-      return;
-    }
-    if (!gameEnd) {
-      gameLogic(moves.currentPlayer, moves.old_player);
-    }
+
+    // Check result BEFORE passing to next turn
+    if (checkWinner()) { lockBoard(); showResult("win", moves.old_player); return; }
+    if (checkDraw())   { lockBoard(); showResult("draw");                  return; }
+
+    gameLogic(moves.currentPlayer, moves.old_player);
   });
-  let winner_player;
-  function player_winner(wining_player) {
-    winner_player = winner_player;
-    winner.textContent = "";
-    winner.classList.remove("oppenent");
-    let p_tag = document.createElement("p");
-    p_tag.textContent = `${wining_player === user ? "You" : "Opponent"} win!`;
-    p_tag.classList.add("slogan");
-    let reset_button = document.createElement("button");
-    reset_button.classList.add("reset_game");
-    reset_button.textContent = "Rematch";
-    winner.appendChild(reset_button);
-    winner.appendChild(p_tag);
-    document.body.appendChild(winner);
-    reset();
-  }
-  function resetGame() {
-    document.querySelectorAll(".cell").forEach((cell) => {
-      cell.classList.remove("animation", "player-X", "player-O");
-      cell.textContent = "";
-    });
-    if (winner.parentNode) {
-      winner.parentNode.removeChild(winner);
-    }
-  }
-  const reset = () => {
-    let reset_game = document.querySelector(".reset_game");
-    reset_game.addEventListener("click", () => {
-      socket.emit("reset", {
-        id: RoomId,
-        Symbol: currentPlayer,
-        player: move_player,
-        user,
-      });
-    });
-  };
+
   socket.on("reset_game", (msg) => {
     if (msg.res === "ok") {
-      resetGame(msg.currentPlayer, msg.symbol);
-    } else {
-      if (user === msg.user) {
-        let parent_tag = document.querySelector(".winners");
-        let p_tag = document.querySelector(".slogan");
-        p_tag.textContent = msg.start;
-        let reset_button = document.querySelector(".reset_game");
-        parent_tag.removeChild(reset_button);
-      } else {
-        null;
-      }
+      resetBoard();
+    } else if (user === msg.user) {
+      const slogan = document.querySelector(".slogan");
+      const btn    = document.querySelector(".reset_game");
+      if (slogan) slogan.textContent = "Waiting for opponent to accept…";
+      btn?.remove();
     }
   });
-  function Draw() {
-    winner_player = "Draw";
-    winner.textContent = "";
-    winner.classList.remove("oppenent");
-    let p_tag = document.createElement("p");
-    p_tag.textContent = "match is Draw";
-    p_tag.classList.add("slogan");
-    let reset_button = document.createElement("button");
-    reset_button.classList.add("reset_game");
-    reset_button.textContent = "Rematch";
-    winner.appendChild(reset_button);
-    winner.appendChild(p_tag);
-    document.body.appendChild(winner);
-    reset();
+
+  function resetBoard() {
+    cells.forEach(c => {
+      c.classList.remove("animation", "player-X", "player-O");
+      c.textContent        = "";
+      c.style.cursor       = "";
+      c.style.pointerEvents = "";
+    });
+    document.querySelector(".winners")?.remove();
+    gameActive = false;
   }
-  function checkDraw() {
-    console.log("Checking");
-    return [...cells].every((cell) => cell.textContent !== "");
+
+  // ════════════════════════════════════════
+  //  RESULT OVERLAY
+  // ════════════════════════════════════════
+  function showResult(type, winning_player) {
+    document.querySelector(".winners")?.remove();
+
+    const overlay = document.createElement("div");
+    overlay.classList.add("winners");
+
+    const icon = Object.assign(document.createElement("div"), {
+      className: "result-icon",
+      textContent: type === "draw" ? "🤝"
+        : winning_player === user ? "🎉" : "😤"
+    });
+    const msg = Object.assign(document.createElement("p"), {
+      className: "slogan",
+      textContent: type === "draw" ? "It's a draw!"
+        : winning_player === user ? "You won!" : "Opponent wins!"
+    });
+    const btn = Object.assign(document.createElement("button"), {
+      className: "reset_game",
+      textContent: "Rematch"
+    });
+    btn.addEventListener("click", () =>
+      socket.emit("reset", { id: RoomId, Symbol: currentPlayer, player: move_player, user })
+    );
+
+    overlay.append(icon, msg, btn);
+    document.body.appendChild(overlay);
   }
+
+  // ════════════════════════════════════════
+  //  HELPERS
+  // ════════════════════════════════════════
   function checkWinner() {
-    const winningCombos = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-    ];
-    return winningCombos.some((combo) => {
-      const [a, b, c] = combo;
-      return (
-        cells[a].textContent === currentPlayer &&
-        cells[b].textContent === currentPlayer &&
-        cells[c].textContent === currentPlayer
-      );
-    });
+    const W = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    return W.some(([a,b,c]) =>
+      cells[a].textContent &&
+      cells[a].textContent === cells[b].textContent &&
+      cells[a].textContent === cells[c].textContent
+    );
   }
-  let move_player;
-  let clickHandler;
-  function oppenent_palyer() {
-    let profiles = document.getElementById("profiles");
-    let opponent_player = document.createElement("div");
-    opponent_player.classList.add("opponent_profile");
-    let name = document.createElement("p");
-    name.textContent = "O";
-    opponent_player.appendChild(name);
-    profiles.appendChild(opponent_player);
+  function checkDraw() { return [...cells].every(c => c.textContent !== ""); }
+
+  function setTurn(isMe) {
+    const ind = document.getElementById("player_turn");
+    if (!ind) return;
+    ind.textContent = isMe ? "Your Turn" : "Opponent's Turn";
+    ind.className   = isMe ? "your-turn" : "opp-turn";
   }
-  function gameLogic(player, opponent) {
+
+  function addOpponent() {
+    if (document.querySelector(".opponent_profile")) return;
+    const profiles = document.getElementById("profiles");
+    const div = Object.assign(document.createElement("div"), { className: "opponent_profile" });
+    div.appendChild(Object.assign(document.createElement("p"), { textContent: "O" }));
+    profiles?.appendChild(div);
+  }
+
+  function gameLogic(player, _opp) {
     move_player = player;
-    let user = document.getElementById("user").innerText;
-    let cells = document.querySelectorAll(".cell");
+    const me = (document.getElementById("user")?.innerText || "").trim();
+    addOpponent();
 
-    cells.forEach((cell, index) => {
-      if (player === user) {
-        if (document.querySelector(".opponent_profile")) {
-          null;
-        } else {
-          oppenent_palyer();
-        }
-        let player_turn = document.getElementById("player_turn");
-        player_turn.textContent = "Your turn";
-        player_turn.style.display = "flex";
-        player_turn.style.color = "#01FF70";
-        cell.addEventListener("click", clickHandler);
-      } else {
-        if (document.querySelector(".opponent_profile")) {
-          null;
-        } else {
-          oppenent_palyer(opponent);
-        }
-        let player_turn = document.getElementById("player_turn");
-        player_turn.textContent = "Opponent turn";
-        player_turn.style.display = "flex";
-        player_turn.style.color = "#FF4136";
-        cell.removeEventListener("click", clickHandler);
-      }
-    });
+    if (player === me) {
+      setTurn(true);
+      enableBoard();
+    } else {
+      setTurn(false);
+      disableBoard();
+    }
   }
 
-  clickHandler = function (event) {
-    let index = Array.from(event.target.parentNode.children).indexOf(
-      event.target
-    );
-    socket.emit(
-      "playerMove",
-      {
-        id: RoomId,
-        player: move_player,
-        cell: index,
-        currentsimbol: currentPlayer,
-      },
-      () => {}
-    );
+  // Click handler — defined after lockBoard/disableBoard so they can reference it
+  clickHandler = function () {
+    if (!gameActive) return;
+    if (this.classList.contains("player-X") || this.classList.contains("player-O")) return;
+
+    // Lock immediately to prevent double-click
+    disableBoard();
+
+    const index = Array.from(this.parentNode.children).indexOf(this);
+    socket.emit("playerMove", {
+      id: RoomId,
+      player: move_player,
+      cell: index,
+      currentsimbol: currentPlayer
+    });
+
     this.classList.add("animation");
-    this.textContent = currentPlayer;
     setTimeout(() => {
       this.classList.remove("animation");
-      if (gameEnd || this.textContent !== "") return;
-      this.textContent = currentPlayer;
-      const classadd = () => {
-        this.classList.remove("animation");
-        if (currentPlayer === "X") {
-          this.classList.add("player-X");
-        } else {
-          this.classList.add("player-O");
-        }
-      };
-      classadd();
-    }, 500);
+      this.classList.add(currentPlayer === "X" ? "player-X" : "player-O");
+      this.style.cursor = "default";
+    }, 350);
   };
 });

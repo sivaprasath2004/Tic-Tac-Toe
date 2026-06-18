@@ -1,142 +1,115 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const board = document.getElementById("board");
   const cells = document.querySelectorAll(".cell");
   let currentPlayer = "X";
-  let gameActive = true;
+  let gameActive    = true;
 
-  const winningCombos = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8], // Rows
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8], // Columns
-    [0, 4, 8],
-    [2, 4, 6], // Diagonals
-  ];
+  const WINS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 
   const checkWinner = () => {
-    for (const combo of winningCombos) {
-      const [a, b, c] = combo;
-      if (
-        cells[a].textContent &&
-        cells[a].textContent === cells[b].textContent &&
-        cells[a].textContent === cells[c].textContent
-      ) {
-        gameActive = false;
-        return cells[a].textContent;
-      }
+    for (const [a,b,c] of WINS) {
+      if (cells[a].dataset.val &&
+          cells[a].dataset.val === cells[b].dataset.val &&
+          cells[a].dataset.val === cells[c].dataset.val)
+        return cells[a].dataset.val;
     }
     return null;
   };
 
-  const checkTie = () => {
-    return Array.from(cells).every((cell) => cell.textContent !== "");
-  };
-  const winner_checking = (item) => {
-    const winner = checkWinner();
-    if (winner) {
-      let wining_slogan;
-      if (item === "user") {
-        wining_slogan = "You won  ..!";
-      } else {
-        wining_slogan = "You Lost ..!";
-      }
-      player_winner(wining_slogan);
-      console.log("winner");
-      gameActive = false;
-    } else {
-      if (checkTie()) {
-        player_winner("Drae the Match");
-        gameActive = false;
-      } else {
-        if (item === "user") {
-          setTimeout(computerMove, 500);
-        }
-      }
-    }
-  };
-  function player_winner(wining_player) {
-    let winner = document.createElement("p");
-    winner.classList.add("winners");
-    let p_tag = document.createElement("p");
-    p_tag.textContent = wining_player;
-    p_tag.classList.add("slogan");
-    let reset_button = document.createElement("button");
-    reset_button.classList.add("reset_game");
-    reset_button.textContent = "Rematch";
-    winner.appendChild(reset_button);
-    winner.appendChild(p_tag);
-    document.body.appendChild(winner);
-    reset_button.addEventListener("click", () => resetGame());
-  }
-  function resetGame() {
-    document.querySelectorAll(".cell").forEach((cell) => {
-      cell.classList.remove("animation", "player-X", "player-O");
-      cell.textContent = "";
-    });
-    let winner = document.querySelector(".winners");
-    winner.parentNode.removeChild(winner);
-    gameActive = true;
-  }
-  const computerMove = () => {
-    currentPlayer = currentPlayer === "X" ? "O" : "X";
-    const emptyCells = Array.from(cells).filter(
-      (cell) => cell.textContent === ""
-    );
-    const randomIndex = Math.floor(Math.random() * emptyCells.length);
-    const cell = emptyCells[randomIndex];
+  const checkTie = () => [...cells].every(c => c.dataset.val);
+
+  function mark(cell, player) {
+    cell.dataset.val = player;
     cell.classList.add("animation");
-    cell.textContent = currentPlayer;
     setTimeout(() => {
       cell.classList.remove("animation");
-      cell.textContent = currentPlayer;
-      const classadd = () => {
-        cell.classList.remove("animation");
-        if (currentPlayer === "X") {
-          cell.classList.add("player-X");
-        } else {
-          cell.classList.add("player-O");
-        }
-      };
-      classadd();
-      winner_checking("computer");
-    }, 500);
-  };
+      cell.classList.add(player === "X" ? "player-X" : "player-O");
+    }, 350);
+  }
 
-  cells.forEach((cell) => {
+  function showResult(msg, icon) {
+    gameActive = false;
+    const overlay = document.createElement("div");
+    overlay.classList.add("winners");
+
+    const ic = Object.assign(document.createElement("div"), { className: "result-icon", textContent: icon });
+    const tx = Object.assign(document.createElement("p"),   { className: "slogan",      textContent: msg  });
+    const bt = Object.assign(document.createElement("button"), { className: "reset_game", textContent: "Play Again" });
+
+    bt.addEventListener("click", () => {
+      cells.forEach(c => {
+        c.classList.remove("animation","player-X","player-O");
+        delete c.dataset.val;
+      });
+      overlay.remove();
+      currentPlayer = "X";
+      gameActive = true;
+    });
+
+    overlay.append(ic, tx, bt);
+    document.body.appendChild(overlay);
+  }
+
+  // ── AI ──
+  function getBestMove() {
+    const empty = [...cells].filter(c => !c.dataset.val);
+
+    // 1. Win
+    for (const [a,b,c] of WINS) {
+      const arr = [cells[a], cells[b], cells[c]];
+      if (arr.filter(x => x.dataset.val === "O").length === 2 &&
+          arr.filter(x => !x.dataset.val).length === 1)
+        return arr.find(x => !x.dataset.val);
+    }
+    // 2. Block
+    for (const [a,b,c] of WINS) {
+      const arr = [cells[a], cells[b], cells[c]];
+      if (arr.filter(x => x.dataset.val === "X").length === 2 &&
+          arr.filter(x => !x.dataset.val).length === 1)
+        return arr.find(x => !x.dataset.val);
+    }
+    // 3. Center
+    if (!cells[4].dataset.val) return cells[4];
+    // 4. Corner
+    const corner = [0,2,6,8].find(i => !cells[i].dataset.val);
+    if (corner !== undefined) return cells[corner];
+    // 5. Random
+    return empty[Math.floor(Math.random() * empty.length)];
+  }
+
+  function computerTurn() {
+    if (!gameActive) return;
+    const target = getBestMove();
+    if (!target) return;
+    mark(target, "O");
+    setTimeout(() => {
+      const w = checkWinner();
+      if (w)          { showResult("Computer wins!", "😤"); return; }
+      if (checkTie()) { showResult("It's a draw!",  "🤝"); return; }
+      currentPlayer = "X";
+    }, 360);
+  }
+
+  cells.forEach(cell => {
     cell.addEventListener("click", () => {
-      currentPlayer = currentPlayer === "X" ? "O" : "X";
-      if (gameActive && !cell.textContent) {
-        cell.classList.add("animation");
-        cell.textContent = currentPlayer;
-        setTimeout(() => {
-          cell.classList.remove("animation");
-          cell.textContent = currentPlayer;
-          const classadd = () => {
-            cell.classList.remove("animation");
-            if (currentPlayer === "X") {
-              cell.classList.add("player-X");
-            } else {
-              cell.classList.add("player-O");
-            }
-            setTimeout(winner_checking("user"), 500);
-          };
-          classadd();
-        }, 500);
-      }
+      if (!gameActive || cell.dataset.val) return;
+      mark(cell, "X");
+      setTimeout(() => {
+        const w = checkWinner();
+        if (w)          { showResult("You won! 🎉",  "🎉"); return; }
+        if (checkTie()) { showResult("It's a draw!", "🤝"); return; }
+        currentPlayer = "O";
+        computerTurn();
+      }, 360);
     });
   });
 
-  let exit = document.getElementById("exit");
-  exit.addEventListener("click", () => {
-    if (exit_game.style.display === "flex") {
-      exit_game.style.display = "none";
-    } else {
-      exit_game.style.display = "flex";
-    }
+  // Exit
+  const exitBtn  = document.getElementById("exit");
+  const exitGame = document.getElementById("exit_game");
+  exitBtn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (exitGame) exitGame.style.display = exitGame.style.display === "flex" ? "none" : "flex";
   });
-  exit_game.addEventListener("click", () => {
-    window.location.href = "https://tic-tac-toe-7bj5.onrender.com/";
-  });
+  exitGame?.addEventListener("click", () => { window.location.href = "/"; });
+  document.addEventListener("click", () => { if (exitGame) exitGame.style.display = "none"; });
 });
